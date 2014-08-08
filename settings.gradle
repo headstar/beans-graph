@@ -1,0 +1,13 @@
+def String[] modules = [
+	'core'
+]
+
+include modules
+
+modules.each {name ->
+	def p = findProject(":${name}")
+	p.name = "spring-bean-graph-${name}"
+	p.buildFileName = "${name}.gradle"
+}
+
+rootProject.name = 'spring-bean-graph'
