@@ -8,3 +8,7 @@ targetCompatibility = 1.6
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint"
 }
+
+ext.springCoreVersion = '3.2.10.RELEASE'
+ext.slf4jApiVersion = '1.7.5'
+ext.jgraphtCoreVersion = '0.9.0'
