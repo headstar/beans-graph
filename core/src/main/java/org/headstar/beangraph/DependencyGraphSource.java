@@ -5,17 +5,26 @@ import org.jgrapht.alg.cycle.JohnsonSimpleCycles;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.UnmodifiableDirectedGraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Method;
 import java.util.*;
+
 
 @Component
 public class DependencyGraphSource implements ApplicationListener<ContextRefreshedEvent> {
+
+    private static Logger log = LoggerFactory.getLogger(DependencyGraphSource.class);
 
     private List<DependencyGraphSourceListener> listeners = new ArrayList<DependencyGraphSourceListener>();
 
@@ -32,29 +41,29 @@ public class DependencyGraphSource implements ApplicationListener<ContextRefresh
         List<List<BeanVertex>> cycles = cyclesFinder.findSimpleCycles();
 
         DependencyGraphResult result = new DependencyGraphResult(dependencyGraph, Collections.unmodifiableList(cycles));
-        for(DependencyGraphSourceListener listener : listeners) {
+        for (DependencyGraphSourceListener listener : listeners) {
             listener.onDependencyGraph(applicationContext, result);
         }
     }
 
     private UnmodifiableDirectedGraph<BeanVertex, DefaultEdge> createDependencyGraph(ApplicationContext context) {
         DirectedGraph<BeanVertex, DefaultEdge> graph = new DefaultDirectedGraph<BeanVertex, DefaultEdge>(DefaultEdge.class);
-        if(!(context instanceof AbstractApplicationContext)) {
+        if (!(context instanceof AbstractApplicationContext)) {
             return new UnmodifiableDirectedGraph<BeanVertex, DefaultEdge>(graph);
         }
 
         ConfigurableListableBeanFactory factory = ((AbstractApplicationContext) context).getBeanFactory();
 
         Queue<BeanVertex> queue = new ArrayDeque<BeanVertex>();
-        for(String beanName : factory.getBeanDefinitionNames()) {
+        for (String beanName : factory.getBeanDefinitionNames()) {
             queue.add(new BeanVertex(beanName));
         }
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             BeanVertex b = queue.remove();
             graph.addVertex(b);
-            for(String dependency : factory.getDependenciesForBean(b.getName())) {
+            for (String dependency : getDependenciesForBean(factory, b.getName())) {
                 BeanVertex dep = new BeanVertex(dependency);
-                if(!graph.containsVertex(dep)) {
+                if (!graph.containsVertex(dep)) {
                     graph.addVertex(dep);
                     queue.add(dep);
                 }
@@ -63,5 +72,31 @@ public class DependencyGraphSource implements ApplicationListener<ContextRefresh
         }
 
         return new UnmodifiableDirectedGraph<BeanVertex, DefaultEdge>(graph);
+    }
+
+    private Collection<String> getDependenciesForBean(final ConfigurableListableBeanFactory factory, String beanName) {
+        final List<String> res = new ArrayList<String>();
+        res.addAll(Arrays.asList(factory.getDependenciesForBean(beanName)));
+        Object bean = factory.getBean(beanName);
+
+        final Class<?> clazz = AopUtils.getTargetClass(bean);
+        ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
+                    public void doWith(Method method) {
+                        if (method.isAnnotationPresent(ManuallyWired.class)) {
+                            ManuallyWired manuallyWired = method.getAnnotation(ManuallyWired.class);
+                            for(String beanName : manuallyWired.beanNames()) {
+                                try {
+                                    factory.getBean(beanName);
+                                    res.add(beanName);
+                                } catch(NoSuchBeanDefinitionException e) {
+                                    log.warn("No such bean: name={}", beanName);
+                                }
+                            }
+                        }
+                    }
+                }
+        );
+
+        return res;
     }
 }

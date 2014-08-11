@@ -2,18 +2,18 @@ package org.headstar.beangraph;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.UnmodifiableGraph;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -31,6 +31,7 @@ public class DependencyGraphSourceTest {
         appContext.register(Foo2.class);
         appContext.register(Foo3.class);
         appContext.register(Foo4.class);
+        appContext.register(Foo5.class);
 
         // when
         appContext.refresh();
@@ -44,11 +45,11 @@ public class DependencyGraphSourceTest {
         DependencyGraphResult result = testListener.getGraphResult();
         UnmodifiableGraph<BeanVertex, DefaultEdge> graph = result.getDependencies();
 
-        assertBeanHasDependency(graph, "foo1", "foo2");
-        assertBeanHasDependency(graph, "foo2", "foo3");
-        assertBeanHasDependency(graph, "foo3", "foo1");
-        assertBeanHasDependency(graph, "foo4", "foo1");
-        assertBeanHasDependency(graph, "foo4", "foo2");
+        assertBeanHasDependencies(graph, "foo1", "foo2");
+        assertBeanHasDependencies(graph, "foo2", "foo3");
+        assertBeanHasDependencies(graph, "foo3", "foo1");
+        assertBeanHasDependencies(graph, "foo4", "foo1", "foo2", "foo3");
+        assertBeanHasDependencies(graph, "foo5");
     }
 
     @Test
@@ -76,10 +77,21 @@ public class DependencyGraphSourceTest {
         assertEquals(getExpectedCycle(), cycles.get(0));
     }
 
-    private void assertBeanHasDependency(UnmodifiableGraph<BeanVertex, DefaultEdge> graph, String source, String target) {
+    private void assertBeanHasDependencies(UnmodifiableGraph<BeanVertex, DefaultEdge> graph, String source, String... targets) {
         BeanVertex sourceVertex = new BeanVertex(source);
-        BeanVertex targetVertex = new BeanVertex(target);
-        assertTrue(graph.containsEdge(sourceVertex, targetVertex));
+
+        Set<DefaultEdge> edges = graph.outgoingEdgesOf(sourceVertex);
+        Set<BeanVertex> actualTargetVertices = new HashSet<BeanVertex>();
+        for(DefaultEdge edge : edges) {
+            actualTargetVertices.add(graph.getEdgeTarget(edge));
+        }
+
+        for(String target : targets) {
+            BeanVertex targetVertex = new BeanVertex(target);
+            assertTrue(String.format("%s depends on %s", source, target), actualTargetVertices.contains(targetVertex));
+            actualTargetVertices.remove(targetVertex);
+        }
+        assertEquals(actualTargetVertices, new HashSet<BeanVertex>(), String.format("no unexpected dependencies for %s", source));
     }
 
     @EnableDependencyGraph
@@ -88,7 +100,8 @@ public class DependencyGraphSourceTest {
 
         private TestListener testListener;
 
-        public TestConfigurer() {}
+        public TestConfigurer() {
+        }
 
         @Override
         public void configureReporters(DependencyGraphSource graphSource) {
@@ -123,23 +136,60 @@ public class DependencyGraphSourceTest {
 
     @Component("foo1")
     private static class Foo1 {
-       @Autowired Foo2 foo2;
+        @Autowired
+        Foo2 foo2;
     }
 
     @Component("foo2")
-    private static class Foo2 {
-       @Autowired Foo3 foo3;
+    private static class Foo2 implements ApplicationContextAware {
+        private final static String FOO3_BEAN_NAME = "foo3";
+
+        @Autowired
+        Foo3 foo3;
+
+        @ManuallyWired(beanNames = {FOO3_BEAN_NAME})
+        @Override
+        public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+            foo3 = (Foo3) applicationContext.getBean(FOO3_BEAN_NAME);
+        }
+
     }
 
     @Component("foo3")
     private static class Foo3 {
-       @Autowired Foo1 foo1;
+        @Autowired
+        Foo1 foo1;
     }
 
     @Component("foo4")
-    private static class Foo4 {
-        @Autowired Foo1 foo1;
-        @Autowired Foo2 foo2;
+    private static class Foo4 implements ApplicationContextAware, InitializingBean {
+
+        private final static String FOO2_BEAN_NAME = "foo2";
+        private final static String FOO3_BEAN_NAME = "foo3";
+
+        private ApplicationContext applicationContext;
+
+        @Autowired
+        Foo1 foo1;
+
+        Foo2 foo2;
+        Foo3 foo3;
+
+        @Override
+        public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+            this.applicationContext = applicationContext;
+        }
+
+        @ManuallyWired(beanNames = {FOO2_BEAN_NAME, FOO3_BEAN_NAME})
+        @Override
+        public void afterPropertiesSet() throws Exception {
+            foo2 = (Foo2) applicationContext.getBean(FOO2_BEAN_NAME);
+            foo3 = (Foo3) applicationContext.getBean(FOO3_BEAN_NAME);
+        }
+    }
+
+    @Component("foo5")
+    private static class Foo5 {
     }
 
     private List<BeanVertex> getExpectedCycle() {
