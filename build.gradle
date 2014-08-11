@@ -1,18 +1,9 @@
-allprojects {
-    apply plugin: 'idea'
-    apply plugin: 'eclipse'
-
-    repositories {
-        mavenCentral()
-    }
-}
-
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath "net.saliman:gradle-cobertura-plugin:2.2.2"
+        classpath "net.saliman:gradle-cobertura-plugin:2.2.4"
     }
 }
 
@@ -24,4 +15,16 @@ ext.javaProjects = subprojects
 
 configure(javaProjects) {
     apply from: "$rootDir/gradle/javaprojects.gradle"
+
+    apply plugin: net.saliman.gradle.plugin.cobertura.CoberturaPlugin
 }
+
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
