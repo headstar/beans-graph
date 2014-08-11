@@ -17,11 +17,30 @@ configure(javaProjects) {
     apply from: "$rootDir/gradle/javaprojects.gradle"
 
     apply plugin: net.saliman.gradle.plugin.cobertura.CoberturaPlugin
+    apply plugin: 'maven-publish'
+    
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+        repositories {
+            maven {
+                url "http://localhost:8081/nexus/content/repositories/snapshots/"
+                credentials {
+                    username 'admin'
+                    password 'admin123'
+                }
+            }
+        }
+    }
 }
 
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
+
 
     repositories {
         mavenCentral()

@@ -10,3 +10,13 @@ dependencies {
 test {
     useTestNG()
 }
+
+publishing {
+    publications {
+        mavenCustom(MavenPublication) {
+            pom.withXml {
+                asNode().appendNode('description', 'Core library generating Spring bean graph')
+            }
+        }
+    }
+}
