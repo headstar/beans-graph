@@ -1,7 +1,5 @@
 package org.headstar.beangraph;
 
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.UnmodifiableDirectedGraph;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 
@@ -40,11 +38,11 @@ public class ConsoleReporter implements DependencyGraphSourceListener {
     }
 
     @Override
-    public void onDependencyGraph(ApplicationContext applicationContext, UnmodifiableDirectedGraph<BeanVertex, DefaultEdge> dependencyGraph, List<List<BeanVertex>> cycles) {
+    public void onDependencyGraph(ApplicationContext applicationContext, DependencyGraphResult result) {
         System.out.println("Circular dependencies in context " + StringUtils.quote(applicationContext.getDisplayName()));
         System.out.println("--------------------------------------------------------------");
         boolean foundOne = false;
-        for (List<BeanVertex> cycle : cycles) {
+        for (List<BeanVertex> cycle : result.getCycles()) {
             if(ignoreCyclesOfLengthOne && cycle.size() == 1) {
                 continue;
             }

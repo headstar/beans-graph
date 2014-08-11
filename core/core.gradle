@@ -2,4 +2,10 @@ dependencies {
     compile "org.springframework:spring-context:$springCoreVersion",
             "org.jgrapht:jgrapht-core:$jgraphtCoreVersion"
             "org.slf4j:slf4j-api:$slf4jApiVersion"
+
+    testCompile "org.testng:testng:$testngVersion"
+}
+
+test {
+    useTestNG()
 }

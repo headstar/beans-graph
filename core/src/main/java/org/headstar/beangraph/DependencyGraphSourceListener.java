@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface DependencyGraphSourceListener {
 
-    void onDependencyGraph(ApplicationContext applicationContext, UnmodifiableDirectedGraph<BeanVertex, DefaultEdge> dependencyGraph, List<List<BeanVertex>> cycles);
+    void onDependencyGraph(ApplicationContext applicationContext, DependencyGraphResult result);
 }

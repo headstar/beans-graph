@@ -21,7 +21,7 @@ public class DependencyGraphConfiguration {
     }
 
     @Bean
-    public DependencyGraphSource getGraphSource() {
+    public DependencyGraphSource dependencyGraphSource() {
         if (graphSource == null) {
             graphSource = new DependencyGraphSource();
             for (DependencyGraphConfigurer configurer : this.configurers) {

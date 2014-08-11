@@ -5,15 +5,11 @@ import org.jgrapht.alg.cycle.JohnsonSimpleCycles;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.UnmodifiableDirectedGraph;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.AbstractRefreshableApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -35,9 +31,9 @@ public class DependencyGraphSource implements ApplicationListener<ContextRefresh
         JohnsonSimpleCycles<BeanVertex, DefaultEdge> cyclesFinder = new JohnsonSimpleCycles<BeanVertex, DefaultEdge>(dependencyGraph);
         List<List<BeanVertex>> cycles = cyclesFinder.findSimpleCycles();
 
-        List<List<BeanVertex>> unmodifiable = Collections.unmodifiableList(cycles);
+        DependencyGraphResult result = new DependencyGraphResult(dependencyGraph, Collections.unmodifiableList(cycles));
         for(DependencyGraphSourceListener listener : listeners) {
-            listener.onDependencyGraph(applicationContext, dependencyGraph, unmodifiable);
+            listener.onDependencyGraph(applicationContext, result);
         }
     }
 
