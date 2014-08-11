@@ -1,5 +1,7 @@
 package org.headstar.beangraph;
 
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.UnmodifiableGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -16,11 +18,41 @@ import java.util.Map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
+import static org.testng.AssertJUnit.assertTrue;
 
 public class DependencyGraphSourceTest {
 
     @Test
-    public void test1() {
+    public void testDependencies() {
+        // given
+        AnnotationConfigApplicationContext appContext = new AnnotationConfigApplicationContext();
+        appContext.register(TestConfigurer.class);
+        appContext.register(Foo1.class);
+        appContext.register(Foo2.class);
+        appContext.register(Foo3.class);
+        appContext.register(Foo4.class);
+
+        // when
+        appContext.refresh();
+
+        // then
+        TestConfigurer testConfigurer = (TestConfigurer) appContext.getBean("testConfigurer");
+        TestListener testListener = testConfigurer.getTestListener();
+        assertSame(appContext, testListener.getApplicationContext());
+        assertNotNull(testListener.getGraphResult());
+
+        DependencyGraphResult result = testListener.getGraphResult();
+        UnmodifiableGraph<BeanVertex, DefaultEdge> graph = result.getDependencies();
+
+        assertBeanHasDependency(graph, "foo1", "foo2");
+        assertBeanHasDependency(graph, "foo2", "foo3");
+        assertBeanHasDependency(graph, "foo3", "foo1");
+        assertBeanHasDependency(graph, "foo4", "foo1");
+        assertBeanHasDependency(graph, "foo4", "foo2");
+    }
+
+    @Test
+    public void testCycle() {
         // given
         AnnotationConfigApplicationContext appContext = new AnnotationConfigApplicationContext();
         appContext.register(TestConfigurer.class);
@@ -42,6 +74,12 @@ public class DependencyGraphSourceTest {
         assertNotNull(cycles);
         assertEquals(1, cycles.size());
         assertEquals(getExpectedCycle(), cycles.get(0));
+    }
+
+    private void assertBeanHasDependency(UnmodifiableGraph<BeanVertex, DefaultEdge> graph, String source, String target) {
+        BeanVertex sourceVertex = new BeanVertex(source);
+        BeanVertex targetVertex = new BeanVertex(target);
+        assertTrue(graph.containsEdge(sourceVertex, targetVertex));
     }
 
     @EnableDependencyGraph
@@ -101,6 +139,7 @@ public class DependencyGraphSourceTest {
     @Component("foo4")
     private static class Foo4 {
         @Autowired Foo1 foo1;
+        @Autowired Foo2 foo2;
     }
 
     private List<BeanVertex> getExpectedCycle() {
