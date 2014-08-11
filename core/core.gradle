@@ -4,6 +4,7 @@ dependencies {
             "org.slf4j:slf4j-api:$slf4jApiVersion"
 
     testCompile "org.testng:testng:$testngVersion"
+    testRuntime "ch.qos.logback:logback-classic:$logbackClassicVersion"
 }
 
 test {

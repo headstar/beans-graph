@@ -74,10 +74,10 @@ public class DependencyGraphSource implements ApplicationListener<ContextRefresh
         return new UnmodifiableDirectedGraph<BeanVertex, DefaultEdge>(graph);
     }
 
-    private Collection<String> getDependenciesForBean(final ConfigurableListableBeanFactory factory, String beanName) {
+    private Collection<String> getDependenciesForBean(final ConfigurableListableBeanFactory factory, final String sourceBeanName) {
         final List<String> res = new ArrayList<String>();
-        res.addAll(Arrays.asList(factory.getDependenciesForBean(beanName)));
-        Object bean = factory.getBean(beanName);
+        res.addAll(Arrays.asList(factory.getDependenciesForBean(sourceBeanName)));
+        Object bean = factory.getBean(sourceBeanName);
 
         final Class<?> clazz = AopUtils.getTargetClass(bean);
         ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
@@ -89,7 +89,7 @@ public class DependencyGraphSource implements ApplicationListener<ContextRefresh
                                     factory.getBean(beanName);
                                     res.add(beanName);
                                 } catch(NoSuchBeanDefinitionException e) {
-                                    log.warn("No such bean: name={}", beanName);
+                                    log.warn("Bean specified by @ManuallyWired not found: sourceBean={}, beanName={}", sourceBeanName, beanName);
                                 }
                             }
                         }

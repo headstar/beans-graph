@@ -199,6 +199,4 @@ public class DependencyGraphSourceTest {
         res.add(new BeanVertex("foo1"));
         return res;
     }
-
-
 }
