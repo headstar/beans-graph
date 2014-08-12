@@ -93,7 +93,7 @@ public class BeanGraphTest {
         assertEquals(actualTargetVertices, new HashSet<BeanGraphVertex>(), String.format("no unexpected dependencies for %s", source));
     }
 
-    @EnableDependencyGraph
+    @EnableBeanGraph
     @Configuration("testConfigurer")
     private static class TestConfigurer implements BeanGraphConfigurer {
 

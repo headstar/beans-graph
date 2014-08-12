@@ -8,5 +8,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import(BeanGraphConfiguration.class)
-public @interface EnableDependencyGraph {
+public @interface EnableBeanGraph {
 }
