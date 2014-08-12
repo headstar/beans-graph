@@ -77,25 +77,24 @@ public class DependencyGraphSource implements ApplicationListener<ContextRefresh
     private Collection<String> getDependenciesForBean(final ConfigurableListableBeanFactory factory, final String sourceBeanName) {
         final List<String> res = new ArrayList<String>();
         res.addAll(Arrays.asList(factory.getDependenciesForBean(sourceBeanName)));
-        Object bean = factory.getBean(sourceBeanName);
 
-        final Class<?> clazz = AopUtils.getTargetClass(bean);
-        ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
-                    public void doWith(Method method) {
-                        if (method.isAnnotationPresent(ManuallyWired.class)) {
-                            ManuallyWired manuallyWired = method.getAnnotation(ManuallyWired.class);
-                            for(String beanName : manuallyWired.beanNames()) {
-                                try {
-                                    factory.getBean(beanName);
-                                    res.add(beanName);
-                                } catch(NoSuchBeanDefinitionException e) {
-                                    log.warn("Bean specified by @ManuallyWired not found: sourceBean={}, beanName={}", sourceBeanName, beanName);
+        if(factory.containsBeanDefinition(sourceBeanName)) {
+            final Object bean = factory.getBean(sourceBeanName);
+            final Class<?> clazz = AopUtils.getTargetClass(bean);
+            ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
+                        public void doWith(Method method) {
+                            if (method.isAnnotationPresent(ManuallyWired.class)) {
+                                ManuallyWired manuallyWired = method.getAnnotation(ManuallyWired.class);
+                                for (String beanName : manuallyWired.beanNames()) {
+                                    if(beanName != null && !beanName.isEmpty()) {
+                                        res.add(beanName);
+                                    }
                                 }
                             }
                         }
                     }
-                }
-        );
+            );
+        }
 
         return res;
     }
