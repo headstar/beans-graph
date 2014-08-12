@@ -4,10 +4,11 @@ def String[] modules = [
 
 include modules
 
+rootProject.name = 'spring-bean-graph'
+
 modules.each {name ->
 	def p = findProject(":${name}")
-	p.name = "spring-bean-graph-${name}"
+	p.name = "${rootProject.name}-${name}"
 	p.buildFileName = "${name}.gradle"
 }
 
-rootProject.name = 'spring-bean-graph'
