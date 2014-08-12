@@ -5,17 +5,17 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-public class ConsoleReporter implements DependencyGraphSourceListener {
+public class ConsoleReporter implements BeanGraphListener {
 
-    public static Builder forSource(DependencyGraphSource source) {
+    public static Builder forSource(BeanGraphProducer source) {
         return new Builder(source);
     }
 
     public static class Builder {
-        private final DependencyGraphSource source;
+        private final BeanGraphProducer source;
         private boolean ignoreCyclesOfLengthOne;
 
-        private Builder(DependencyGraphSource source) {
+        private Builder(BeanGraphProducer source) {
             this.source = source;
             withIgnoreCyclesOfLengthOne(true);
         }
@@ -32,17 +32,17 @@ public class ConsoleReporter implements DependencyGraphSourceListener {
 
     private final boolean ignoreCyclesOfLengthOne;
 
-    ConsoleReporter(DependencyGraphSource source, boolean ignoreCyclesOfLengthOne) {
+    ConsoleReporter(BeanGraphProducer source, boolean ignoreCyclesOfLengthOne) {
         this.ignoreCyclesOfLengthOne = ignoreCyclesOfLengthOne;
         source.addListener(this);
     }
 
     @Override
-    public void onDependencyGraph(ApplicationContext applicationContext, DependencyGraphResult result) {
+    public void onBeanGraphResult(ApplicationContext applicationContext, BeanGraphResult result) {
         System.out.println("Circular dependencies in context " + StringUtils.quote(applicationContext.getDisplayName()));
         System.out.println("--------------------------------------------------------------");
         boolean foundOne = false;
-        for (List<BeanVertex> cycle : result.getCycles()) {
+        for (List<BeanGraphVertex> cycle : result.getCycles()) {
             if(ignoreCyclesOfLengthOne && cycle.size() == 1) {
                 continue;
             }
@@ -54,10 +54,10 @@ public class ConsoleReporter implements DependencyGraphSourceListener {
         }
     }
 
-    private String formatCycle(List<BeanVertex> cycles) {
+    private String formatCycle(List<BeanGraphVertex> cycles) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (BeanVertex v : cycles) {
+        for (BeanGraphVertex v : cycles) {
             if (!first) {
                 sb.append(",");
             }

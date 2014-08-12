@@ -8,23 +8,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-public class DependencyGraphConfiguration {
+public class BeanGraphConfiguration {
 
-    private final List<DependencyGraphConfigurer> configurers = new ArrayList<DependencyGraphConfigurer>();
-    private DependencyGraphSource graphSource;
+    private final List<BeanGraphConfigurer> configurers = new ArrayList<BeanGraphConfigurer>();
+    private BeanGraphProducer graphSource;
 
     @Autowired(required = false)
-    public void setDependencyConfigurers(final List<DependencyGraphConfigurer> configurers) {
+    public void setDependencyConfigurers(final List<BeanGraphConfigurer> configurers) {
         if (configurers != null) {
             this.configurers.addAll(configurers);
         }
     }
 
     @Bean
-    public DependencyGraphSource dependencyGraphSource() {
+    public BeanGraphProducer dependencyGraphSource() {
         if (graphSource == null) {
-            graphSource = new DependencyGraphSource();
-            for (DependencyGraphConfigurer configurer : this.configurers) {
+            graphSource = new BeanGraphProducer();
+            for (BeanGraphConfigurer configurer : this.configurers) {
                 configurer.configureReporters(graphSource);
             }
         }

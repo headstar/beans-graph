@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.testng.annotations.Test;
@@ -20,7 +19,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.AssertJUnit.assertTrue;
 
-public class DependencyGraphSourceTest {
+public class BeanGraphTest {
 
     @Test
     public void testDependencies() {
@@ -42,8 +41,8 @@ public class DependencyGraphSourceTest {
         assertSame(appContext, testListener.getApplicationContext());
         assertNotNull(testListener.getGraphResult());
 
-        DependencyGraphResult result = testListener.getGraphResult();
-        UnmodifiableGraph<BeanVertex, DefaultEdge> graph = result.getDependencies();
+        BeanGraphResult result = testListener.getGraphResult();
+        UnmodifiableGraph<BeanGraphVertex, DefaultEdge> graph = result.getDependencies();
 
         assertBeanHasDependencies(graph, "foo1", "foo2");
         assertBeanHasDependencies(graph, "foo2", "foo3");
@@ -70,33 +69,33 @@ public class DependencyGraphSourceTest {
         assertSame(appContext, testListener.getApplicationContext());
         assertNotNull(testListener.getGraphResult());
 
-        DependencyGraphResult result = testListener.getGraphResult();
-        List<List<BeanVertex>> cycles = result.getCycles();
+        BeanGraphResult result = testListener.getGraphResult();
+        List<List<BeanGraphVertex>> cycles = result.getCycles();
         assertNotNull(cycles);
         assertEquals(1, cycles.size());
         assertEquals(getExpectedCycle(), cycles.get(0));
     }
 
-    private void assertBeanHasDependencies(UnmodifiableGraph<BeanVertex, DefaultEdge> graph, String source, String... targets) {
-        BeanVertex sourceVertex = new BeanVertex(source);
+    private void assertBeanHasDependencies(UnmodifiableGraph<BeanGraphVertex, DefaultEdge> graph, String source, String... targets) {
+        BeanGraphVertex sourceVertex = new BeanGraphVertex(source);
 
         Set<DefaultEdge> edges = graph.outgoingEdgesOf(sourceVertex);
-        Set<BeanVertex> actualTargetVertices = new HashSet<BeanVertex>();
+        Set<BeanGraphVertex> actualTargetVertices = new HashSet<BeanGraphVertex>();
         for(DefaultEdge edge : edges) {
             actualTargetVertices.add(graph.getEdgeTarget(edge));
         }
 
         for(String target : targets) {
-            BeanVertex targetVertex = new BeanVertex(target);
+            BeanGraphVertex targetVertex = new BeanGraphVertex(target);
             assertTrue(String.format("%s depends on %s", source, target), actualTargetVertices.contains(targetVertex));
             actualTargetVertices.remove(targetVertex);
         }
-        assertEquals(actualTargetVertices, new HashSet<BeanVertex>(), String.format("no unexpected dependencies for %s", source));
+        assertEquals(actualTargetVertices, new HashSet<BeanGraphVertex>(), String.format("no unexpected dependencies for %s", source));
     }
 
     @EnableDependencyGraph
     @Configuration("testConfigurer")
-    private static class TestConfigurer implements DependencyGraphConfigurer {
+    private static class TestConfigurer implements BeanGraphConfigurer {
 
         private TestListener testListener;
 
@@ -104,7 +103,7 @@ public class DependencyGraphSourceTest {
         }
 
         @Override
-        public void configureReporters(DependencyGraphSource graphSource) {
+        public void configureReporters(BeanGraphProducer graphSource) {
             testListener = new TestListener();
             graphSource.addListener(testListener);
         }
@@ -114,13 +113,13 @@ public class DependencyGraphSourceTest {
         }
     }
 
-    private static class TestListener implements DependencyGraphSourceListener {
+    private static class TestListener implements BeanGraphListener {
 
         private ApplicationContext applicationContext;
-        private DependencyGraphResult graphResult;
+        private BeanGraphResult graphResult;
 
         @Override
-        public void onDependencyGraph(ApplicationContext applicationContext, DependencyGraphResult result) {
+        public void onBeanGraphResult(ApplicationContext applicationContext, BeanGraphResult result) {
             this.applicationContext = applicationContext;
             this.graphResult = result;
         }
@@ -129,7 +128,7 @@ public class DependencyGraphSourceTest {
             return applicationContext;
         }
 
-        public DependencyGraphResult getGraphResult() {
+        public BeanGraphResult getGraphResult() {
             return graphResult;
         }
     }
@@ -192,11 +191,11 @@ public class DependencyGraphSourceTest {
     private static class Foo5 {
     }
 
-    private List<BeanVertex> getExpectedCycle() {
-        List<BeanVertex> res = new ArrayList<BeanVertex>();
-        res.add(new BeanVertex("foo3"));
-        res.add(new BeanVertex("foo2"));
-        res.add(new BeanVertex("foo1"));
+    private List<BeanGraphVertex> getExpectedCycle() {
+        List<BeanGraphVertex> res = new ArrayList<BeanGraphVertex>();
+        res.add(new BeanGraphVertex("foo3"));
+        res.add(new BeanGraphVertex("foo2"));
+        res.add(new BeanGraphVertex("foo1"));
         return res;
     }
 }

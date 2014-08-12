@@ -1,9 +1,9 @@
 package org.headstar.beangraph;
 
-public class BeanVertex {
+public class BeanGraphVertex {
     private final String name;
 
-    BeanVertex(String name) {
+    BeanGraphVertex(String name) {
         this.name = name;
     }
 
@@ -12,7 +12,7 @@ public class BeanVertex {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BeanVertex that = (BeanVertex) o;
+        BeanGraphVertex that = (BeanGraphVertex) o;
 
         if (!name.equals(that.name)) return false;
 
@@ -30,7 +30,7 @@ public class BeanVertex {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Bean [");
+        final StringBuilder sb = new StringBuilder("BeanGraphVertex [");
         sb.append("id='").append(name).append('\'');
         sb.append(']');
         return sb.toString();
