@@ -1,4 +1,4 @@
-spring-dependency-graph
+spring-bean-graph
 =======================
 
 [![Build Status](https://travis-ci.org/headstar/spring-bean-graph.svg?branch=master)](https://travis-ci.org/headstar/spring-bean-graph)
