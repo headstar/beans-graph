@@ -24,6 +24,9 @@ publishing {
         mavenCustom(MavenPublication) {
             from components.java
 
+            groupId 'org.headstar.beangraph'
+            artifactId 'beangraph-core'
+
             pom.withXml {
                 asNode().appendNode('description', 'Core library generating Spring bean graph')
             }

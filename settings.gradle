@@ -4,7 +4,7 @@ def String[] modules = [
 
 include modules
 
-rootProject.name = 'spring-bean-graph'
+rootProject.name = 'beangraph'
 
 modules.each {name ->
 	def p = findProject(":${name}")

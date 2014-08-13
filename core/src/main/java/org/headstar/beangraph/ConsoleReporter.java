@@ -49,6 +49,7 @@ public class ConsoleReporter implements BeanGraphListener {
     public void onBeanGraphResult(ApplicationContext applicationContext, BeanGraphResult result) {
         printSeparator();
         System.out.println("Circular dependencies in context " + StringUtils.quote(applicationContext.getDisplayName()));
+        printSeparator();
         int counter = 0;
         for (List<BeanGraphVertex> cycle : result.getCycles()) {
             if(ignoreCyclesOfLengthOne && cycle.size() == 1) {
@@ -56,6 +57,9 @@ public class ConsoleReporter implements BeanGraphListener {
             }
             ++counter;
             System.out.println("[" + formatCycle(cycle) + "]");
+        }
+        if(counter > 0) {
+            printSeparator();
         }
         System.out.println("Number of circular dependencies found: " + counter);
         printSeparator();
