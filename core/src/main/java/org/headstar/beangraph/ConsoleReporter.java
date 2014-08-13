@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class ConsoleReporter implements BeanGraphListener {
 
+    private final static int WIDTH = 80;
+
     public static Builder forSource(BeanGraphProducer source) {
         return new Builder(source);
     }
@@ -45,19 +47,18 @@ public class ConsoleReporter implements BeanGraphListener {
 
     @Override
     public void onBeanGraphResult(ApplicationContext applicationContext, BeanGraphResult result) {
+        printSeparator();
         System.out.println("Circular dependencies in context " + StringUtils.quote(applicationContext.getDisplayName()));
-        System.out.println("--------------------------------------------------------------");
-        boolean foundOne = false;
+        int counter = 0;
         for (List<BeanGraphVertex> cycle : result.getCycles()) {
             if(ignoreCyclesOfLengthOne && cycle.size() == 1) {
                 continue;
             }
-            foundOne = true;
+            ++counter;
             System.out.println("[" + formatCycle(cycle) + "]");
         }
-        if(!foundOne) {
-            System.out.println("No circular dependency found in context " + StringUtils.quote(applicationContext.getDisplayName()));
-        }
+        System.out.println("Number of circular dependencies found: " + counter);
+        printSeparator();
     }
 
     private String formatCycle(List<BeanGraphVertex> cycles) {
@@ -71,5 +72,12 @@ public class ConsoleReporter implements BeanGraphListener {
             first = false;
         }
         return sb.toString();
+    }
+
+    private void printSeparator() {
+        for(int i=0; i<WIDTH; ++i) {
+            System.out.print("-");
+        }
+        System.out.println();
     }
 }
