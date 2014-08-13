@@ -7,6 +7,14 @@ import org.springframework.context.annotation.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is the class imported by {@link org.headstar.beangraph.EnableBeanGraph @EnableBeanGraph}.
+ *
+ * @see org.headstar.beangraph.BeanGraphConfigurer
+ * @see org.headstar.beangraph.BeanGraphProducer
+ * @author Per Johansson
+ * @since 1.0
+ */
 @Configuration
 public class BeanGraphConfiguration {
 

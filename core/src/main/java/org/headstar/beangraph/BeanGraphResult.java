@@ -5,6 +5,13 @@ import org.jgrapht.graph.UnmodifiableDirectedGraph;
 
 import java.util.List;
 
+/**
+ * Keeps the result produced by {@link org.headstar.beangraph.BeanGraphProducer}.
+ *
+ * @see org.headstar.beangraph.BeanGraphProducer
+ * @author Per Johansson
+ * @since 1.0
+ */
 public class BeanGraphResult {
 
     private final UnmodifiableDirectedGraph<BeanGraphVertex, DefaultEdge> dependencies;

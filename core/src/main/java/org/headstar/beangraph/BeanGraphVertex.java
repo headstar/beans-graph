@@ -1,5 +1,11 @@
 package org.headstar.beangraph;
 
+/**
+ * Vertex in the produced bean graph.
+ *
+ * @author Per Johansson
+ * @since 1.0
+ */
 public class BeanGraphVertex {
     private final String name;
 

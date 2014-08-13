@@ -5,6 +5,12 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+/**
+ * Prints all cyclic dependencies on standard out.
+ *
+ * @author Per Johansson
+ * @since 1.0
+ */
 public class ConsoleReporter implements BeanGraphListener {
 
     public static Builder forSource(BeanGraphProducer source) {

@@ -19,7 +19,13 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Method;
 import java.util.*;
 
-
+/**
+ * Produces the bean graph on every ContextRefreshedEvent and calls and registered listeners.
+ *
+ * @see org.headstar.beangraph.BeanGraphListener
+ * @author Per Johansson
+ * @since 1.0
+ */
 @Component
 public class BeanGraphProducer implements ApplicationListener<ContextRefreshedEvent> {
 
