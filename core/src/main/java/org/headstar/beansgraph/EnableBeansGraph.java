@@ -1,4 +1,4 @@
-package org.headstar.beangraph;
+package org.headstar.beansgraph;
 
 import org.springframework.context.annotation.Import;
 
@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 
 /**
  * Add this annotation to an {@code @Configuration} class to have the
- * configuration defined in {@link org.headstar.beangraph.BeanGraphConfiguration} imported.
+ * configuration defined in {@link BeansGraphConfiguration} imported.
  *
  *
  * @author Per Johansson
@@ -15,6 +15,6 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(BeanGraphConfiguration.class)
-public @interface EnableBeanGraph {
+@Import(BeansGraphConfiguration.class)
+public @interface EnableBeansGraph {
 }

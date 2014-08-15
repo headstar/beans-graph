@@ -1,4 +1,4 @@
-package org.headstar.beangraph;
+package org.headstar.beansgraph;
 
 /**
  * Vertex in the produced bean graph.
@@ -6,10 +6,10 @@ package org.headstar.beangraph;
  * @author Per Johansson
  * @since 1.0
  */
-public class BeanGraphVertex {
+public class BeansGraphVertex {
     private final String name;
 
-    BeanGraphVertex(String name) {
+    BeansGraphVertex(String name) {
         this.name = name;
     }
 
@@ -18,7 +18,7 @@ public class BeanGraphVertex {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BeanGraphVertex that = (BeanGraphVertex) o;
+        BeansGraphVertex that = (BeansGraphVertex) o;
 
         if (!name.equals(that.name)) return false;
 

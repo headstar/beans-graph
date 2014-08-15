@@ -1,4 +1,4 @@
-package org.headstar.beangraph;
+package org.headstar.beansgraph;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
@@ -11,19 +11,19 @@ import java.util.List;
  * @author Per Johansson
  * @since 1.0
  */
-public class ConsoleReporter implements BeanGraphListener {
+public class ConsoleReporter implements BeansGraphListener {
 
     private final static int WIDTH = 80;
 
-    public static Builder forSource(BeanGraphProducer source) {
+    public static Builder forSource(BeansGraphProducer source) {
         return new Builder(source);
     }
 
     public static class Builder {
-        private final BeanGraphProducer source;
+        private final BeansGraphProducer source;
         private boolean ignoreCyclesOfLengthOne;
 
-        private Builder(BeanGraphProducer source) {
+        private Builder(BeansGraphProducer source) {
             this.source = source;
             withIgnoreCyclesOfLengthOne(true);
         }
@@ -40,18 +40,18 @@ public class ConsoleReporter implements BeanGraphListener {
 
     private final boolean ignoreCyclesOfLengthOne;
 
-    ConsoleReporter(BeanGraphProducer source, boolean ignoreCyclesOfLengthOne) {
+    ConsoleReporter(BeansGraphProducer source, boolean ignoreCyclesOfLengthOne) {
         this.ignoreCyclesOfLengthOne = ignoreCyclesOfLengthOne;
         source.addListener(this);
     }
 
     @Override
-    public void onBeanGraphResult(ApplicationContext applicationContext, BeanGraphResult result) {
+    public void onBeanGraphResult(ApplicationContext applicationContext, BeansGraphResult result) {
         printSeparator();
         System.out.println("Circular dependencies in context " + StringUtils.quote(applicationContext.getDisplayName()));
         printSeparator();
         int counter = 0;
-        for (List<BeanGraphVertex> cycle : result.getCycles()) {
+        for (List<BeansGraphVertex> cycle : result.getCycles()) {
             if(ignoreCyclesOfLengthOne && cycle.size() == 1) {
                 continue;
             }
@@ -65,10 +65,10 @@ public class ConsoleReporter implements BeanGraphListener {
         printSeparator();
     }
 
-    private String formatCycle(List<BeanGraphVertex> cycles) {
+    private String formatCycle(List<BeansGraphVertex> cycles) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (BeanGraphVertex v : cycles) {
+        for (BeansGraphVertex v : cycles) {
             if (!first) {
                 sb.append(",");
             }

@@ -1,4 +1,4 @@
-package org.headstar.beangraph;
+package org.headstar.beansgraph;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
  * }
  * </code>
  * </pre>
- * @see org.headstar.beangraph.BeanGraphProducer
+ * @see BeansGraphProducer
  * @author Per Johansson
  * @since 1.0
  */

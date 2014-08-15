@@ -1,4 +1,4 @@
-package org.headstar.beangraph;
+package org.headstar.beansgraph;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.UnmodifiableGraph;
@@ -19,7 +19,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
 import static org.testng.AssertJUnit.assertTrue;
 
-public class BeanGraphTest {
+public class BeansGraphTest {
 
     @Test
     public void testDependencies() {
@@ -41,8 +41,8 @@ public class BeanGraphTest {
         assertSame(appContext, testListener.getApplicationContext());
         assertNotNull(testListener.getGraphResult());
 
-        BeanGraphResult result = testListener.getGraphResult();
-        UnmodifiableGraph<BeanGraphVertex, DefaultEdge> graph = result.getDependencies();
+        BeansGraphResult result = testListener.getGraphResult();
+        UnmodifiableGraph<BeansGraphVertex, DefaultEdge> graph = result.getDependencies();
 
         assertBeanHasDependencies(graph, "foo1", "foo2");
         assertBeanHasDependencies(graph, "foo2", "foo3");
@@ -69,31 +69,31 @@ public class BeanGraphTest {
         assertSame(appContext, testListener.getApplicationContext());
         assertNotNull(testListener.getGraphResult());
 
-        BeanGraphResult result = testListener.getGraphResult();
-        List<List<BeanGraphVertex>> cycles = result.getCycles();
+        BeansGraphResult result = testListener.getGraphResult();
+        List<List<BeansGraphVertex>> cycles = result.getCycles();
         assertNotNull(cycles);
         assertEquals(1, cycles.size());
         assertEquals(getExpectedCycle(), cycles.get(0));
     }
 
-    private void assertBeanHasDependencies(UnmodifiableGraph<BeanGraphVertex, DefaultEdge> graph, String source, String... targets) {
-        BeanGraphVertex sourceVertex = new BeanGraphVertex(source);
+    private void assertBeanHasDependencies(UnmodifiableGraph<BeansGraphVertex, DefaultEdge> graph, String source, String... targets) {
+        BeansGraphVertex sourceVertex = new BeansGraphVertex(source);
 
         Set<DefaultEdge> edges = graph.outgoingEdgesOf(sourceVertex);
-        Set<BeanGraphVertex> actualTargetVertices = new HashSet<BeanGraphVertex>();
+        Set<BeansGraphVertex> actualTargetVertices = new HashSet<BeansGraphVertex>();
         for(DefaultEdge edge : edges) {
             actualTargetVertices.add(graph.getEdgeTarget(edge));
         }
 
         for(String target : targets) {
-            BeanGraphVertex targetVertex = new BeanGraphVertex(target);
+            BeansGraphVertex targetVertex = new BeansGraphVertex(target);
             assertTrue(String.format("%s depends on %s", source, target), actualTargetVertices.contains(targetVertex));
             actualTargetVertices.remove(targetVertex);
         }
-        assertEquals(actualTargetVertices, new HashSet<BeanGraphVertex>(), String.format("no unexpected dependencies for %s", source));
+        assertEquals(actualTargetVertices, new HashSet<BeansGraphVertex>(), String.format("no unexpected dependencies for %s", source));
     }
 
-    @EnableBeanGraph
+    @EnableBeansGraph
     @Configuration("testConfigurer")
     private static class TestConfigurer implements BeanGraphConfigurer {
 
@@ -103,7 +103,7 @@ public class BeanGraphTest {
         }
 
         @Override
-        public void configureReporters(BeanGraphProducer graphSource) {
+        public void configureReporters(BeansGraphProducer graphSource) {
             testListener = new TestListener();
             graphSource.addListener(testListener);
         }
@@ -113,13 +113,13 @@ public class BeanGraphTest {
         }
     }
 
-    private static class TestListener implements BeanGraphListener {
+    private static class TestListener implements BeansGraphListener {
 
         private ApplicationContext applicationContext;
-        private BeanGraphResult graphResult;
+        private BeansGraphResult graphResult;
 
         @Override
-        public void onBeanGraphResult(ApplicationContext applicationContext, BeanGraphResult result) {
+        public void onBeanGraphResult(ApplicationContext applicationContext, BeansGraphResult result) {
             this.applicationContext = applicationContext;
             this.graphResult = result;
         }
@@ -128,7 +128,7 @@ public class BeanGraphTest {
             return applicationContext;
         }
 
-        public BeanGraphResult getGraphResult() {
+        public BeansGraphResult getGraphResult() {
             return graphResult;
         }
     }
@@ -191,11 +191,11 @@ public class BeanGraphTest {
     private static class Foo5 {
     }
 
-    private List<BeanGraphVertex> getExpectedCycle() {
-        List<BeanGraphVertex> res = new ArrayList<BeanGraphVertex>();
-        res.add(new BeanGraphVertex("foo3"));
-        res.add(new BeanGraphVertex("foo2"));
-        res.add(new BeanGraphVertex("foo1"));
+    private List<BeansGraphVertex> getExpectedCycle() {
+        List<BeansGraphVertex> res = new ArrayList<BeansGraphVertex>();
+        res.add(new BeansGraphVertex("foo3"));
+        res.add(new BeansGraphVertex("foo2"));
+        res.add(new BeansGraphVertex("foo1"));
         return res;
     }
 }

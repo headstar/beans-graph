@@ -1,4 +1,4 @@
-package org.headstar.beangraph;
+package org.headstar.beansgraph;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,18 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is the class imported by {@link org.headstar.beangraph.EnableBeanGraph @EnableBeanGraph}.
+ * This is the class imported by {@link EnableBeansGraph @EnableBeanGraph}.
  *
- * @see org.headstar.beangraph.BeanGraphConfigurer
- * @see org.headstar.beangraph.BeanGraphProducer
+ * @see org.headstar.beansgraph.BeanGraphConfigurer
+ * @see BeansGraphProducer
  * @author Per Johansson
  * @since 1.0
  */
 @Configuration
-public class BeanGraphConfiguration {
+public class BeansGraphConfiguration {
 
     private final List<BeanGraphConfigurer> configurers = new ArrayList<BeanGraphConfigurer>();
-    private BeanGraphProducer graphSource;
+    private BeansGraphProducer graphSource;
 
     @Autowired(required = false)
     public void setDependencyConfigurers(final List<BeanGraphConfigurer> configurers) {
@@ -29,9 +29,9 @@ public class BeanGraphConfiguration {
     }
 
     @Bean
-    public BeanGraphProducer dependencyGraphSource() {
+    public BeansGraphProducer dependencyGraphSource() {
         if (graphSource == null) {
-            graphSource = new BeanGraphProducer();
+            graphSource = new BeansGraphProducer();
             for (BeanGraphConfigurer configurer : this.configurers) {
                 configurer.configureReporters(graphSource);
             }
