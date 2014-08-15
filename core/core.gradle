@@ -64,7 +64,3 @@ nexus {
     repositoryUrl = 'http://localhost:8081/nexus/content/repositories/releases/'
     snapshotRepositoryUrl = 'http://localhost:8081/nexus/content/repositories/snapshots/'
 }
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
-}
