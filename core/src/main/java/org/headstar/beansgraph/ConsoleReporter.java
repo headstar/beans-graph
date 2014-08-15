@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class ConsoleReporter implements BeansGraphListener {
 
-    private final static int WIDTH = 80;
+    private final static int WIDTH = 120;
 
     public static Builder forSource(BeansGraphProducer source) {
         return new Builder(source);
