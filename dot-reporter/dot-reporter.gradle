@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7.1'
+    }
+}
+
 dependencies {
     compile "org.jgrapht:jgrapht-core:$jgraphtCoreVersion",
             "org.jgrapht:jgrapht-ext:$jgraphtCoreVersion",
@@ -10,4 +20,48 @@ dependencies {
 
 test {
     useTestNG()
+}
+
+apply plugin: 'nexus'
+
+group = rootProject.group
+
+modifyPom {
+    project {
+        name 'Spring beans graph'
+        description 'Outputs the Spring bean dependencies to a .dot file'
+        url 'https://github.com/headstar/spring-beans-graph'
+        inceptionYear '2014'
+
+        scm {
+            url 'https://github.com/headstar/spring-beans-graph'
+            connection 'scm:https://github.com/headstar/spring-beans-graph.git'
+            developerConnection 'scm:git@github.com:headstar/spring-beans-graph.git'
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+
+        developers {
+            developer {
+                id 'per'
+                name 'Per Johansson'
+                email 'per.johansson@post.com'
+            }
+        }
+    }
+}
+
+nexus {
+    attachSources = true
+    attachTests = false
+    attachJavadoc = true
+    sign = false
+    repositoryUrl = 'http://localhost:8081/nexus/content/repositories/releases/'
+    snapshotRepositoryUrl = 'http://localhost:8081/nexus/content/repositories/snapshots/'
 }

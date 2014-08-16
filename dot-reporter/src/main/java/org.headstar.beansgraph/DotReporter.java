@@ -12,7 +12,7 @@ import java.io.Writer;
  *  A reporter which outputs the result to a Dot file, see http://en.wikipedia.org/wiki/DOT_language.
  *
  * @author Per Johansson
- * @see 1.0
+ * @since 1.0
  */
 public class DotReporter implements BeansGraphListener {
 

@@ -58,9 +58,9 @@ modifyPom {
 }
 
 nexus {
-    attachSources = false
+    attachSources = true
     attachTests = false
-    attachJavadoc = false
+    attachJavadoc = true
     sign = false
     repositoryUrl = 'http://localhost:8081/nexus/content/repositories/releases/'
     snapshotRepositoryUrl = 'http://localhost:8081/nexus/content/repositories/snapshots/'
