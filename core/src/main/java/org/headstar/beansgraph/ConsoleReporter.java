@@ -59,8 +59,8 @@ public class ConsoleReporter implements BeansGraphListener {
 
     @Override
     public void onBeanGraphResult(ApplicationContext applicationContext, BeansGraphResult result) {
-        printCycles(applicationContext, result);
         printBeanDependencies(applicationContext, result);
+        printCycles(applicationContext, result);
     }
 
     private void printCycles(ApplicationContext applicationContext, BeansGraphResult result) {

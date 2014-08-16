@@ -1,16 +1,18 @@
 package org.headstar.beansgraph;
 
-import junit.framework.TestListener;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.UnmodifiableGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.testng.annotations.Test;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertFalse;
 
 /**
  * Created by per on 8/15/14.
@@ -31,19 +33,30 @@ public class ConsoleReporterTest {
         // when
         appContext.refresh();
 
-        // then some output should be seen in the console
+        // then
+        TestConfigurer testConfigurer = (TestConfigurer) appContext.getBean("testConfigurer");
+        assertFalse(testConfigurer.getStringWriter().toString().isEmpty());
     }
 
     @EnableBeansGraph
-    @Configuration
+    @Configuration("testConfigurer")
     private static class TestConfigurer implements BeanGraphConfigurer {
+
+        private StringWriter stringWriter;
 
         public TestConfigurer() {
         }
 
         @Override
         public void configureReporters(BeansGraphProducer graphSource) {
-            ConsoleReporter.forSource(graphSource).build();
+            stringWriter = new StringWriter();
+                ConsoleReporter.forSource(graphSource)
+                        .withOutput(new PrintWriter(stringWriter))
+                        .build();
+        }
+
+        public StringWriter getStringWriter() {
+            return stringWriter;
         }
     }
 
