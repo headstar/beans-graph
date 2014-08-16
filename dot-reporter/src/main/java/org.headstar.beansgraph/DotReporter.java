@@ -52,7 +52,7 @@ public class DotReporter implements BeansGraphListener {
     public void onBeanGraphResult(ApplicationContext applicationContext, BeansGraphResult result) {
         DOTExporter<BeansGraphVertex, DefaultEdge> exporter = new DOTExporter<BeansGraphVertex, DefaultEdge>(new BeanVertexIdProvider(),
                 new BeanVertexNameProvider(), null);
-        exporter.export(out, result.getDependencies());
+        exporter.export(out, result.getDependencyGraph());
     }
 
     private static class BeanVertexNameProvider implements VertexNameProvider<BeansGraphVertex> {

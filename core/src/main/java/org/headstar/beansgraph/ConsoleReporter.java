@@ -82,8 +82,8 @@ public class ConsoleReporter implements BeansGraphListener {
         printSeparator();
         out.println("Dependencies in context " + StringUtils.quote(applicationContext.getDisplayName()));
         printSeparator();
-        Set<BeansGraphVertex> vertices = result.getDependencies().vertexSet();
-        UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge> graph =  result.getDependencies();
+        Set<BeansGraphVertex> vertices = result.getDependencyGraph().vertexSet();
+        UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge> graph =  result.getDependencyGraph();
         for(BeansGraphVertex v : getOrderedVertexSet(vertices)) {
             Collection<BeansGraphVertex> dependencies = getOrderedVertexSet(collectTargetVertices(graph, v));
             Collection<BeansGraphVertex> dependents = getOrderedVertexSet(collectSourceVertices(graph, v));

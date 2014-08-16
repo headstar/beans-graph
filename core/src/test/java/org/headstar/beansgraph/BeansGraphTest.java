@@ -42,7 +42,7 @@ public class BeansGraphTest {
         assertNotNull(testListener.getGraphResult());
 
         BeansGraphResult result = testListener.getGraphResult();
-        UnmodifiableGraph<BeansGraphVertex, DefaultEdge> graph = result.getDependencies();
+        UnmodifiableGraph<BeansGraphVertex, DefaultEdge> graph = result.getDependencyGraph();
 
         assertBeanHasDependencies(graph, "foo1", "foo2");
         assertBeanHasDependencies(graph, "foo2", "foo3");
