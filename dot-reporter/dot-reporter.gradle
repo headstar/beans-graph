@@ -1,0 +1,13 @@
+dependencies {
+    compile "org.jgrapht:jgrapht-core:$jgraphtCoreVersion",
+            "org.jgrapht:jgrapht-ext:$jgraphtCoreVersion",
+            "org.slf4j:slf4j-api:$slf4jApiVersion",
+            project(':beansgraph-core')
+
+    testCompile "org.testng:testng:$testngVersion"
+    testRuntime "ch.qos.logback:logback-classic:$logbackClassicVersion"
+}
+
+test {
+    useTestNG()
+}

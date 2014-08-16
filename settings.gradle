@@ -1,5 +1,6 @@
 def String[] modules = [
-	'core'
+	'core',
+    'dot-reporter'
 ]
 
 include modules
