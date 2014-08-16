@@ -31,7 +31,7 @@ public class ConsoleReporterTest {
         // when
         appContext.refresh();
 
-        // then some out put should be seen in the console
+        // then some output should be seen in the console
     }
 
     @EnableBeansGraph
