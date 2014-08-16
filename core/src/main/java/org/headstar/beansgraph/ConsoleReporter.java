@@ -16,7 +16,7 @@ import java.util.*;
  */
 public class ConsoleReporter implements BeansGraphListener {
 
-    private final static int WIDTH = 120;
+    private final static int WIDTH = 140;
 
     public static Builder forSource(BeansGraphProducer source) {
         return new Builder(source);
@@ -60,6 +60,7 @@ public class ConsoleReporter implements BeansGraphListener {
     @Override
     public void onBeanGraphResult(ApplicationContext applicationContext, BeansGraphResult result) {
         printBeanDependencies(applicationContext, result);
+        out.println();
         printCycles(applicationContext, result);
     }
 
@@ -73,6 +74,7 @@ public class ConsoleReporter implements BeansGraphListener {
             }
             out.println("[" + formatVertices(cycle) + "]");
         }
+        printSeparator();
         out.flush();
     }
 
@@ -88,6 +90,7 @@ public class ConsoleReporter implements BeansGraphListener {
             out.format("%s: ->[%s], <-[%s]", v.getName(), formatVertices(dependencies), formatVertices(dependents));
             out.println();
         }
+        printSeparator();
         out.flush();
     }
 
