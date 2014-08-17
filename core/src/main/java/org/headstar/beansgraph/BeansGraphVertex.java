@@ -8,6 +8,7 @@ package org.headstar.beansgraph;
  */
 public class BeansGraphVertex {
     private final String name;
+    private String beanClassName;
 
     BeansGraphVertex(String name) {
         this.name = name;
@@ -27,6 +28,14 @@ public class BeansGraphVertex {
 
     public String getName() {
         return name;
+    }
+
+    public String getBeanClassName() {
+        return beanClassName;
+    }
+
+    public void setBeanClassName(String beanClassName) {
+        this.beanClassName = beanClassName;
     }
 
     @Override

@@ -29,7 +29,6 @@ public class ConsoleReporterTest {
         appContext.register(Foo3.class);
         appContext.register(Foo4.class);
 
-
         // when
         appContext.refresh();
 
@@ -50,9 +49,9 @@ public class ConsoleReporterTest {
         @Override
         public void configureReporters(BeansGraphProducer graphSource) {
             stringWriter = new StringWriter();
-                ConsoleReporter.forSource(graphSource)
-                        .withOutput(new PrintWriter(stringWriter))
-                        .build();
+            ConsoleReporter.forSource(graphSource)
+                    .withOutput(new PrintWriter(stringWriter))
+                    .build();
         }
 
         public StringWriter getStringWriter() {

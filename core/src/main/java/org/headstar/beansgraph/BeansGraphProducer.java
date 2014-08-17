@@ -8,6 +8,7 @@ import org.jgrapht.graph.UnmodifiableDirectedGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -61,13 +62,13 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
 
         Queue<BeansGraphVertex> queue = new ArrayDeque<BeansGraphVertex>();
         for (String beanName : factory.getBeanDefinitionNames()) {
-            queue.add(new BeansGraphVertex(beanName));
+            queue.add(createBeanVertex(factory, beanName));
         }
         while (!queue.isEmpty()) {
             BeansGraphVertex b = queue.remove();
             graph.addVertex(b);
             for (String dependency : getDependenciesForBean(factory, b.getName())) {
-                BeansGraphVertex dep = new BeansGraphVertex(dependency);
+                BeansGraphVertex dep = createBeanVertex(factory, dependency);
                 if (!graph.containsVertex(dep)) {
                     graph.addVertex(dep);
                     queue.add(dep);
@@ -101,6 +102,15 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
             );
         }
 
+        return res;
+    }
+
+    private BeansGraphVertex createBeanVertex(final ConfigurableListableBeanFactory factory, String beanName) {
+        BeansGraphVertex res = new BeansGraphVertex(beanName);
+        if(factory.containsBeanDefinition(beanName)) {
+            BeanDefinition bd = factory.getBeanDefinition(beanName);
+            res.setBeanClassName(bd.getBeanClassName());
+        }
         return res;
     }
 }

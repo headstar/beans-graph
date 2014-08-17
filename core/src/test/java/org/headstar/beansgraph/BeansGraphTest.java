@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.*;
@@ -75,6 +76,36 @@ public class BeansGraphTest {
         assertEquals(1, cycles.size());
         assertEquals(getExpectedCycle(), cycles.get(0));
     }
+
+    @Test
+    public void testVertex() {
+        // given
+        AnnotationConfigApplicationContext appContext = new AnnotationConfigApplicationContext();
+        appContext.register(TestConfigurer.class);
+        appContext.register(Foo5.class);
+
+        // when
+        appContext.refresh();
+
+        // then
+        TestConfigurer testConfigurer = (TestConfigurer) appContext.getBean("testConfigurer");
+        TestListener testListener = testConfigurer.getTestListener();
+        assertNotNull(testListener.getGraphResult());
+
+        BeansGraphResult result = testListener.getGraphResult();
+        Set<BeansGraphVertex> vertices = result.getDependencyGraph().vertexSet();
+
+        boolean foo5Found = false;
+        for(BeansGraphVertex v : vertices) {
+            if(v.getName().equals("foo5")) {
+                assertEquals(v.getBeanClassName(), Foo5.class.getName());
+                foo5Found = true;
+            }
+        }
+
+        Assert.assertTrue(foo5Found);
+    }
+
 
     private void assertBeanHasDependencies(UnmodifiableGraph<BeansGraphVertex, DefaultEdge> graph, String source, String... targets) {
         BeansGraphVertex sourceVertex = new BeansGraphVertex(source);
