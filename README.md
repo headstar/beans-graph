@@ -1,4 +1,4 @@
-#Spring beans graph [![Build Status](https://travis-ci.org/headstar/spring-beans-graph.svg?branch=master)](https://travis-ci.org/headstar/spring-beans-graph)
+##Spring beans graph [![Build Status](https://travis-ci.org/headstar/spring-beans-graph.svg?branch=master)](https://travis-ci.org/headstar/spring-beans-graph)
 
 The spring-beans-graph library creates a graph of Spring bean dependencies in an application. The dependencies are collected at runtime. The library is useful if you want to:
 
@@ -19,6 +19,10 @@ Current version is 1.0.0.
 
 ###Basic Usage
 
+
+Java Annotation Config:
+
+```java
 import org.headstar.beansgraph.BeansGraphProducer;
 import org.headstar.beansgraph.ConsoleReporter;
 import org.headstar.beansgraph.EnableBeansGraph;
@@ -33,3 +37,4 @@ public class ConfigureBeanGraphReporters implements org.headstar.beansgraph.Bean
         ConsoleReporter.forSource(producer).build();
     }
 }
+```
