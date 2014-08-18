@@ -1,8 +1,8 @@
 ##Spring beans graph [![Build Status](https://travis-ci.org/headstar/spring-beans-graph.svg?branch=master)](https://travis-ci.org/headstar/spring-beans-graph)
 
-The spring-beans-graph library creates a graph of Spring bean dependencies in an application. The dependencies are collected at runtime. The library is useful if you want to:
+The spring-beans-graph library creates a graph of Spring bean dependencies in an application. The dependencies are collected at runtime. The library will help you:
 
-* Find cyclic dependencies
+* Find cyclic dependencies in your application
 * Get an overview of your application's bean dependencies
 
 ###Maven
@@ -38,6 +38,8 @@ public class ConfigureBeanGraphReporters implements org.headstar.beansgraph.Bean
     }
 }
 ```
+Example of enables the beans graph producer (`@EnableBeansGraph`) and configures a reporter which prints the result to `System.out`.
+
 ###License
 
 Published under Apache Software License 2.0, see LICENSE
