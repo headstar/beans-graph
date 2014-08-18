@@ -20,7 +20,7 @@ Current version is 1.0.0.
 ###Usage
 
 
-####Java annotation configuration:
+Java annotation configuration:
 
 ```java
 import org.headstar.beansgraph.BeansGraphProducer;
@@ -39,6 +39,17 @@ public class ConfigureBeanGraphReporters implements org.headstar.beansgraph.Bean
 }
 ```
 The example above enables the beans graph producer (`@EnableBeansGraph`) and configures a reporter which prints the result to the default destination (`System.out`).
+
+Filter on class name:
+```java
+ @Override
+ public void configureReporters(BeansGraphProducer producer) {
+        ConsoleReporter.forSource(producer)
+        .withClassNamePattern(Pattern.compile("com\\.foo\\..*"))
+        .build();
+}
+```
+
 
 ###License
 
