@@ -17,10 +17,10 @@ Current version is 1.0.0.
 </dependency>
 ```
 
-###Basic Usage
+###Usage
 
 
-Java Annotation Config:
+####Java annotation configuration:
 
 ```java
 import org.headstar.beansgraph.BeansGraphProducer;
