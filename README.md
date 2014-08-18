@@ -38,3 +38,6 @@ public class ConfigureBeanGraphReporters implements org.headstar.beansgraph.Bean
     }
 }
 ```
+###License
+
+Published under Apache Software License 2.0, see LICENSE
