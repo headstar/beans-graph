@@ -38,7 +38,7 @@ public class ConfigureBeanGraphReporters implements org.headstar.beansgraph.Bean
     }
 }
 ```
-The example above enables the beans graph producer (`@EnableBeansGraph`) and configures a reporter which prints the result to `System.out`.
+The example above enables the beans graph producer (`@EnableBeansGraph`) and configures a reporter which prints the result to the default destination (`System.out`).
 
 ###License
 
