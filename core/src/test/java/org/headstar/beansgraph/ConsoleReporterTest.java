@@ -54,7 +54,6 @@ public class ConsoleReporterTest {
         // then
         TestConfigurerWithFilter testConfigurer = (TestConfigurerWithFilter) appContext.getBean("testConfigurer");
         String output = testConfigurer.getStringWriter().toString();
-        System.out.print(output);
         assertTrue(output.contains("org.headstar"));
         assertFalse(output.contains("org.springframework.context.annotation.internalAutowiredAnnotationProcessor"));
     }
