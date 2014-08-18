@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * A reporter which outputs the result to a {@link PrintWriter}, like {@code System.out}.
@@ -26,6 +27,7 @@ public class ConsoleReporter implements BeansGraphListener {
         private final BeansGraphProducer source;
         private boolean ignoreCyclesOfLengthOne;
         private PrintWriter out;
+        private Pattern classNamePattern;
 
         private Builder(BeansGraphProducer source) {
             this.source = source;
@@ -43,17 +45,24 @@ public class ConsoleReporter implements BeansGraphListener {
             return this;
         }
 
+        public Builder withClassNamePattern(Pattern classNamePattern) {
+            this.classNamePattern = classNamePattern;
+            return this;
+        }
+
         public ConsoleReporter build() {
-            return new ConsoleReporter(source, out, ignoreCyclesOfLengthOne);
+            return new ConsoleReporter(source, out, ignoreCyclesOfLengthOne, classNamePattern);
         }
     }
 
     private final boolean ignoreCyclesOfLengthOne;
     private final PrintWriter out;
+    private final Pattern classNamePattern;
 
-    private ConsoleReporter(BeansGraphProducer source, PrintWriter out, boolean ignoreCyclesOfLengthOne) {
+    private ConsoleReporter(BeansGraphProducer source, PrintWriter out, boolean ignoreCyclesOfLengthOne, Pattern classNamePattern) {
         this.ignoreCyclesOfLengthOne = ignoreCyclesOfLengthOne;
         this.out = out;
+        this.classNamePattern = classNamePattern;
         source.addListener(this);
     }
 
@@ -85,10 +94,12 @@ public class ConsoleReporter implements BeansGraphListener {
         Set<BeansGraphVertex> vertices = result.getDependencyGraph().vertexSet();
         UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge> graph =  result.getDependencyGraph();
         for(BeansGraphVertex v : getOrderedVertexSet(vertices)) {
-            Collection<BeansGraphVertex> dependencies = getOrderedVertexSet(collectTargetVertices(graph, v));
-            Collection<BeansGraphVertex> dependents = getOrderedVertexSet(collectSourceVertices(graph, v));
-            out.format("%s: ->[%s], <-[%s]", v.getName(), formatVertices(dependencies), formatVertices(dependents));
-            out.println();
+            if(FilterUtil.beanClassMatches(v, classNamePattern)) {
+                Collection<BeansGraphVertex> dependencies = getOrderedVertexSet(collectTargetVertices(graph, v));
+                Collection<BeansGraphVertex> dependents = getOrderedVertexSet(collectSourceVertices(graph, v));
+                out.format("%s: ->[%s], <-[%s]", v.getName(), formatVertices(dependencies), formatVertices(dependents));
+                out.println();
+            }
         }
         printSeparator();
         out.flush();

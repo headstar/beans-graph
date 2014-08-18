@@ -29,7 +29,7 @@ public class BeansGraphConfiguration {
     }
 
     @Bean
-    public BeansGraphProducer dependencyGraphSource() {
+    public BeansGraphProducer beansGraphProducer() {
         if (graphSource == null) {
             graphSource = new BeansGraphProducer();
             for (BeanGraphConfigurer configurer : this.configurers) {

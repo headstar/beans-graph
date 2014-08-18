@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.regex.Pattern;
 
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
@@ -20,7 +21,7 @@ import static org.testng.AssertJUnit.assertFalse;
 public class ConsoleReporterTest {
 
     @Test
-    public void testReporter() {
+    public void testReporterBasic() {
         // given
         AnnotationConfigApplicationContext appContext = new AnnotationConfigApplicationContext();
         appContext.register(TestConfigurer.class);
@@ -35,6 +36,27 @@ public class ConsoleReporterTest {
         // then
         TestConfigurer testConfigurer = (TestConfigurer) appContext.getBean("testConfigurer");
         assertFalse(testConfigurer.getStringWriter().toString().isEmpty());
+    }
+
+    @Test
+    public void testReporterWithFilter() {
+        // given
+        AnnotationConfigApplicationContext appContext = new AnnotationConfigApplicationContext();
+        appContext.register(TestConfigurerWithFilter.class);
+        appContext.register(Foo1.class);
+        appContext.register(Foo2.class);
+        appContext.register(Foo3.class);
+        appContext.register(Foo4.class);
+
+        // when
+        appContext.refresh();
+
+        // then
+        TestConfigurerWithFilter testConfigurer = (TestConfigurerWithFilter) appContext.getBean("testConfigurer");
+        String output = testConfigurer.getStringWriter().toString();
+        System.out.print(output);
+        assertTrue(output.contains("org.headstar"));
+        assertFalse(output.contains("org.springframework.context.annotation.internalAutowiredAnnotationProcessor"));
     }
 
     @EnableBeansGraph
@@ -59,7 +81,30 @@ public class ConsoleReporterTest {
         }
     }
 
-    @Component
+    @EnableBeansGraph
+    @Configuration("testConfigurer")
+    private static class TestConfigurerWithFilter implements BeanGraphConfigurer {
+
+        private StringWriter stringWriter;
+
+        public TestConfigurerWithFilter() {
+        }
+
+        @Override
+        public void configureReporters(BeansGraphProducer graphSource) {
+            stringWriter = new StringWriter();
+            ConsoleReporter.forSource(graphSource)
+                    .withOutput(new PrintWriter(stringWriter))
+                    .withClassNamePattern(Pattern.compile("org\\.headstar\\..*"))
+                    .build();
+        }
+
+        public StringWriter getStringWriter() {
+            return stringWriter;
+        }
+    }
+
+    @Component("foo1")
     private static class Foo1 {
         @Autowired
         Foo2 foo2;
