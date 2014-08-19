@@ -1,4 +1,4 @@
-package org.headstartech.beansgraph;
+package com.headstartech.beansgraph;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.UnmodifiableGraph;
