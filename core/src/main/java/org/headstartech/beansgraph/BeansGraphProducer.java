@@ -1,4 +1,4 @@
-package org.headstar.beansgraph;
+package org.headstartech.beansgraph;
 
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.cycle.JohnsonSimpleCycles;

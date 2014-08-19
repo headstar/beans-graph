@@ -1,4 +1,4 @@
-package org.headstar.beansgraph;
+package org.headstartech.beansgraph;
 
 import java.util.regex.Pattern;
 

@@ -1,4 +1,4 @@
-package org.headstar.beansgraph;
+package org.headstartech.beansgraph;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -47,7 +47,7 @@ public class DotReporterTest {
         @Override
         public void configureReporters(BeansGraphProducer graphSource) {
             stringWriter = new StringWriter();
-            org.headstar.beansgraph.DotReporter.forSource(graphSource)
+            org.headstartech.beansgraph.DotReporter.forSource(graphSource)
                     .withOutput(new PrintWriter(stringWriter))
                     .build();
 

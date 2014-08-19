@@ -1,4 +1,4 @@
-package org.headstar.beansgraph;
+package org.headstartech.beansgraph;
 
 /**
  * Defines callback methods to customize the Java-based configuration

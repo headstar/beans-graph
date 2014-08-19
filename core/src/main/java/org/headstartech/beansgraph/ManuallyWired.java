@@ -1,4 +1,4 @@
-package org.headstar.beansgraph;
+package org.headstartech.beansgraph;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

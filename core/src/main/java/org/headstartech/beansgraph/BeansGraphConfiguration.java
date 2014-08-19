@@ -1,4 +1,4 @@
-package org.headstar.beansgraph;
+package org.headstartech.beansgraph;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * This is the class imported by {@link EnableBeansGraph @EnableBeanGraph}.
  *
- * @see org.headstar.beansgraph.BeanGraphConfigurer
+ * @see org.headstartech.beansgraph.BeanGraphConfigurer
  * @see BeansGraphProducer
  * @author Per Johansson
  * @since 1.0
