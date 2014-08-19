@@ -1,4 +1,4 @@
-package org.headstartech.beansgraph;
+package com.headstartech.beansgraph;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -54,7 +54,7 @@ public class ConsoleReporterTest {
         // then
         TestConfigurerWithFilter testConfigurer = (TestConfigurerWithFilter) appContext.getBean("testConfigurer");
         String output = testConfigurer.getStringWriter().toString();
-        assertTrue(output.contains("org.headstartech"));
+        assertTrue(output.contains("com.headstartech"));
         assertFalse(output.contains("org.springframework.context.annotation.internalAutowiredAnnotationProcessor"));
     }
 
@@ -94,7 +94,7 @@ public class ConsoleReporterTest {
             stringWriter = new StringWriter();
             ConsoleReporter.forSource(graphSource)
                     .withOutput(new PrintWriter(stringWriter))
-                    .withClassNamePattern(Pattern.compile("org\\.headstartech\\..*"))
+                    .withClassNamePattern(Pattern.compile("com\\.headstartech\\..*"))
                     .build();
         }
 
