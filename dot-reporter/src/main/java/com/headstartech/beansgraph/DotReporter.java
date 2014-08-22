@@ -50,24 +50,24 @@ public class DotReporter implements BeansGraphListener {
 
     @Override
     public void onBeanGraphResult(ApplicationContext applicationContext, BeansGraphResult result) {
-        DOTExporter<BeansGraphVertex, DefaultEdge> exporter = new DOTExporter<BeansGraphVertex, DefaultEdge>(new BeanVertexIdProvider(),
+        DOTExporter<Bean, DefaultEdge> exporter = new DOTExporter<Bean, DefaultEdge>(new BeanVertexIdProvider(),
                 new BeanVertexNameProvider(), null);
         exporter.export(out, result.getDependencyGraph());
     }
 
-    private static class BeanVertexNameProvider implements VertexNameProvider<BeansGraphVertex> {
+    private static class BeanVertexNameProvider implements VertexNameProvider<Bean> {
 
         @Override
-        public String getVertexName(BeansGraphVertex vertex) {
+        public String getVertexName(Bean vertex) {
             return vertex.getName();
         }
     }
 
-    private static class BeanVertexIdProvider implements VertexNameProvider<BeansGraphVertex> {
+    private static class BeanVertexIdProvider implements VertexNameProvider<Bean> {
 
         @Override
-        public String getVertexName(BeansGraphVertex vertex) {
-            return vertex.getName().replace('.', '_');
+        public String getVertexName(Bean bean) {
+            return bean.getName().replace('.', '_');
         }
     }
 }

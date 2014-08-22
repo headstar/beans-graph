@@ -43,7 +43,7 @@ public class BeansGraphTest {
         assertNotNull(testListener.getGraphResult());
 
         BeansGraphResult result = testListener.getGraphResult();
-        UnmodifiableGraph<BeansGraphVertex, DefaultEdge> graph = result.getDependencyGraph();
+        UnmodifiableGraph<Bean, DefaultEdge> graph = result.getDependencyGraph();
 
         assertBeanHasDependencies(graph, "foo1", "foo2");
         assertBeanHasDependencies(graph, "foo2", "foo3");
@@ -71,7 +71,7 @@ public class BeansGraphTest {
         assertNotNull(testListener.getGraphResult());
 
         BeansGraphResult result = testListener.getGraphResult();
-        List<List<BeansGraphVertex>> cycles = result.getCycles();
+        List<List<Bean>> cycles = result.getCycles();
         assertNotNull(cycles);
         assertEquals(1, cycles.size());
         assertEquals(getExpectedCycle(), cycles.get(0));
@@ -93,12 +93,12 @@ public class BeansGraphTest {
         assertNotNull(testListener.getGraphResult());
 
         BeansGraphResult result = testListener.getGraphResult();
-        Set<BeansGraphVertex> vertices = result.getDependencyGraph().vertexSet();
+        Set<Bean> vertices = result.getDependencyGraph().vertexSet();
 
         boolean foo5Found = false;
-        for(BeansGraphVertex v : vertices) {
+        for(Bean v : vertices) {
             if(v.getName().equals("foo5")) {
-                assertEquals(v.getBeanClassName(), Foo5.class.getName());
+                assertEquals(v.getClassName(), Foo5.class.getName());
                 foo5Found = true;
             }
         }
@@ -107,21 +107,21 @@ public class BeansGraphTest {
     }
 
 
-    private void assertBeanHasDependencies(UnmodifiableGraph<BeansGraphVertex, DefaultEdge> graph, String source, String... targets) {
-        BeansGraphVertex sourceVertex = new BeansGraphVertex(source);
+    private void assertBeanHasDependencies(UnmodifiableGraph<Bean, DefaultEdge> graph, String source, String... targets) {
+        Bean sourceVertex = new Bean(source);
 
         Set<DefaultEdge> edges = graph.outgoingEdgesOf(sourceVertex);
-        Set<BeansGraphVertex> actualTargetVertices = new HashSet<BeansGraphVertex>();
+        Set<Bean> actualTargetVertices = new HashSet<Bean>();
         for(DefaultEdge edge : edges) {
             actualTargetVertices.add(graph.getEdgeTarget(edge));
         }
 
         for(String target : targets) {
-            BeansGraphVertex targetVertex = new BeansGraphVertex(target);
+            Bean targetVertex = new Bean(target);
             assertTrue(String.format("%s depends on %s", source, target), actualTargetVertices.contains(targetVertex));
             actualTargetVertices.remove(targetVertex);
         }
-        assertEquals(actualTargetVertices, new HashSet<BeansGraphVertex>(), String.format("no unexpected dependencies for %s", source));
+        assertEquals(actualTargetVertices, new HashSet<Bean>(), String.format("no unexpected dependencies for %s", source));
     }
 
     @EnableBeansGraph
@@ -222,11 +222,11 @@ public class BeansGraphTest {
     private static class Foo5 {
     }
 
-    private List<BeansGraphVertex> getExpectedCycle() {
-        List<BeansGraphVertex> res = new ArrayList<BeansGraphVertex>();
-        res.add(new BeansGraphVertex("foo3"));
-        res.add(new BeansGraphVertex("foo2"));
-        res.add(new BeansGraphVertex("foo1"));
+    private List<Bean> getExpectedCycle() {
+        List<Bean> res = new ArrayList<Bean>();
+        res.add(new Bean("foo3"));
+        res.add(new Bean("foo2"));
+        res.add(new Bean("foo1"));
         return res;
     }
 }

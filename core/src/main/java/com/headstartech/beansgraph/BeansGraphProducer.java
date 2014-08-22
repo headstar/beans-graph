@@ -42,9 +42,9 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
     public void onApplicationEvent(final ContextRefreshedEvent event) {
         ApplicationContext applicationContext = event.getApplicationContext();
 
-        UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge> dependencyGraph = createDependencyGraph(applicationContext);
-        JohnsonSimpleCycles<BeansGraphVertex, DefaultEdge> cyclesFinder = new JohnsonSimpleCycles<BeansGraphVertex, DefaultEdge>(dependencyGraph);
-        List<List<BeansGraphVertex>> cycles = cyclesFinder.findSimpleCycles();
+        UnmodifiableDirectedGraph<Bean, DefaultEdge> dependencyGraph = createDependencyGraph(applicationContext);
+        JohnsonSimpleCycles<Bean, DefaultEdge> cyclesFinder = new JohnsonSimpleCycles<Bean, DefaultEdge>(dependencyGraph);
+        List<List<Bean>> cycles = cyclesFinder.findSimpleCycles();
 
         BeansGraphResult result = new BeansGraphResult(dependencyGraph, Collections.unmodifiableList(cycles));
         for (BeansGraphListener listener : listeners) {
@@ -52,23 +52,23 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
         }
     }
 
-    private UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge> createDependencyGraph(ApplicationContext context) {
-        DirectedGraph<BeansGraphVertex, DefaultEdge> graph = new DefaultDirectedGraph<BeansGraphVertex, DefaultEdge>(DefaultEdge.class);
+    private UnmodifiableDirectedGraph<Bean, DefaultEdge> createDependencyGraph(ApplicationContext context) {
+        DirectedGraph<Bean, DefaultEdge> graph = new DefaultDirectedGraph<Bean, DefaultEdge>(DefaultEdge.class);
         if (!(context instanceof AbstractApplicationContext)) {
-            return new UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge>(graph);
+            return new UnmodifiableDirectedGraph<Bean, DefaultEdge>(graph);
         }
 
         ConfigurableListableBeanFactory factory = ((AbstractApplicationContext) context).getBeanFactory();
 
-        Queue<BeansGraphVertex> queue = new ArrayDeque<BeansGraphVertex>();
+        Queue<Bean> queue = new ArrayDeque<Bean>();
         for (String beanName : factory.getBeanDefinitionNames()) {
             queue.add(createBeanVertex(factory, beanName));
         }
         while (!queue.isEmpty()) {
-            BeansGraphVertex b = queue.remove();
+            Bean b = queue.remove();
             graph.addVertex(b);
             for (String dependency : getDependenciesForBean(factory, b.getName())) {
-                BeansGraphVertex dep = createBeanVertex(factory, dependency);
+                Bean dep = createBeanVertex(factory, dependency);
                 if (!graph.containsVertex(dep)) {
                     graph.addVertex(dep);
                     queue.add(dep);
@@ -77,7 +77,7 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
             }
         }
 
-        return new UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge>(graph);
+        return new UnmodifiableDirectedGraph<Bean, DefaultEdge>(graph);
     }
 
     private Collection<String> getDependenciesForBean(final ConfigurableListableBeanFactory factory, final String sourceBeanName) {
@@ -105,11 +105,11 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
         return res;
     }
 
-    private BeansGraphVertex createBeanVertex(final ConfigurableListableBeanFactory factory, String beanName) {
-        BeansGraphVertex res = new BeansGraphVertex(beanName);
+    private Bean createBeanVertex(final ConfigurableListableBeanFactory factory, String beanName) {
+        Bean res = new Bean(beanName);
         if(factory.containsBeanDefinition(beanName)) {
             BeanDefinition bd = factory.getBeanDefinition(beanName);
-            res.setBeanClassName(bd.getBeanClassName());
+            res.setClassName(bd.getBeanClassName());
         }
         return res;
     }

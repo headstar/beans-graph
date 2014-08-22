@@ -77,7 +77,7 @@ public class ConsoleReporter implements BeansGraphListener {
         printSeparator();
         out.println("Circular dependencies in context " + StringUtils.quote(applicationContext.getDisplayName()));
         printSeparator();
-        for (List<BeansGraphVertex> cycle : result.getCycles()) {
+        for (List<Bean> cycle : result.getCycles()) {
             if(ignoreCyclesOfLengthOne && cycle.size() == 1) {
                 continue;
             }
@@ -91,12 +91,12 @@ public class ConsoleReporter implements BeansGraphListener {
         printSeparator();
         out.println("Dependencies in context " + StringUtils.quote(applicationContext.getDisplayName()));
         printSeparator();
-        Set<BeansGraphVertex> vertices = result.getDependencyGraph().vertexSet();
-        UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge> graph =  result.getDependencyGraph();
-        for(BeansGraphVertex v : getOrderedVertexSet(vertices)) {
+        Set<Bean> vertices = result.getDependencyGraph().vertexSet();
+        UnmodifiableDirectedGraph<Bean, DefaultEdge> graph =  result.getDependencyGraph();
+        for(Bean v : getOrderedVertexSet(vertices)) {
             if(FilterUtil.beanClassMatches(v, classNamePattern)) {
-                Collection<BeansGraphVertex> dependencies = getOrderedVertexSet(collectTargetVertices(graph, v));
-                Collection<BeansGraphVertex> dependents = getOrderedVertexSet(collectSourceVertices(graph, v));
+                Collection<Bean> dependencies = getOrderedVertexSet(collectTargetVertices(graph, v));
+                Collection<Bean> dependents = getOrderedVertexSet(collectSourceVertices(graph, v));
                 out.format("%s: ->[%s], <-[%s]", v.getName(), formatVertices(dependencies), formatVertices(dependents));
                 out.println();
             }
@@ -105,16 +105,16 @@ public class ConsoleReporter implements BeansGraphListener {
         out.flush();
     }
 
-    private Set<BeansGraphVertex> collectTargetVertices(UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge> graph , BeansGraphVertex v) {
-        Set<BeansGraphVertex> res = new HashSet<BeansGraphVertex>();
+    private Set<Bean> collectTargetVertices(UnmodifiableDirectedGraph<Bean, DefaultEdge> graph , Bean v) {
+        Set<Bean> res = new HashSet<Bean>();
         for(DefaultEdge e : graph.outgoingEdgesOf(v)) {
             res.add(graph.getEdgeTarget(e));
         }
         return res;
     }
 
-    private Set<BeansGraphVertex> collectSourceVertices(UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge> graph , BeansGraphVertex v) {
-        Set<BeansGraphVertex> res = new HashSet<BeansGraphVertex>();
+    private Set<Bean> collectSourceVertices(UnmodifiableDirectedGraph<Bean, DefaultEdge> graph , Bean v) {
+        Set<Bean> res = new HashSet<Bean>();
         for(DefaultEdge e : graph.incomingEdgesOf(v)) {
             res.add(graph.getEdgeSource(e));
         }
@@ -122,10 +122,10 @@ public class ConsoleReporter implements BeansGraphListener {
     }
 
 
-    private String formatVertices(Collection<BeansGraphVertex> vertices) {
+    private String formatVertices(Collection<Bean> vertices) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (BeansGraphVertex v : vertices) {
+        for (Bean v : vertices) {
             if (!first) {
                 sb.append(",");
             }
@@ -142,16 +142,16 @@ public class ConsoleReporter implements BeansGraphListener {
         out.println();
     }
 
-    private Set<BeansGraphVertex> getOrderedVertexSet(Set<BeansGraphVertex> vertices) {
-        TreeSet<BeansGraphVertex> res = new TreeSet<BeansGraphVertex>(new BeanVertexComparator());
+    private Set<Bean> getOrderedVertexSet(Set<Bean> vertices) {
+        TreeSet<Bean> res = new TreeSet<Bean>(new BeanVertexComparator());
         res.addAll(vertices);
         return res;
     }
 
-    private static class BeanVertexComparator implements Comparator<BeansGraphVertex> {
+    private static class BeanVertexComparator implements Comparator<Bean> {
 
         @Override
-        public int compare(BeansGraphVertex o1, BeansGraphVertex o2) {
+        public int compare(Bean o1, Bean o2) {
             return o1.getName().compareTo(o2.getName());
         }
     }

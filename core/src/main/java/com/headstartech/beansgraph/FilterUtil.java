@@ -9,7 +9,7 @@ public class FilterUtil {
 
     private FilterUtil() {}
 
-    public static boolean beanClassMatches(BeansGraphVertex v, Pattern p) {
-        return v.getBeanClassName() == null || p == null || p.matcher(v.getBeanClassName()).matches();
+    public static boolean beanClassMatches(Bean v, Pattern p) {
+        return v.getClassName() == null || p == null || p.matcher(v.getClassName()).matches();
     }
 }

@@ -1,16 +1,16 @@
 package com.headstartech.beansgraph;
 
 /**
- * Vertex in the produced bean graph.
+ * Vertex in the produced beans graph.
  *
  * @author Per Johansson
  * @since 1.0
  */
-public class BeansGraphVertex {
+public class Bean {
     private final String name;
-    private String beanClassName;
+    private String className;
 
-    BeansGraphVertex(String name) {
+    Bean(String name) {
         this.name = name;
     }
 
@@ -19,7 +19,7 @@ public class BeansGraphVertex {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BeansGraphVertex that = (BeansGraphVertex) o;
+        Bean that = (Bean) o;
 
         if (!name.equals(that.name)) return false;
 
@@ -30,12 +30,12 @@ public class BeansGraphVertex {
         return name;
     }
 
-    public String getBeanClassName() {
-        return beanClassName;
+    public String getClassName() {
+        return className;
     }
 
-    public void setBeanClassName(String beanClassName) {
-        this.beanClassName = beanClassName;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class BeansGraphVertex {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("BeanGraphVertex [");
+        final StringBuilder sb = new StringBuilder("Bean [");
         sb.append("id='").append(name).append('\'');
         sb.append(']');
         return sb.toString();

@@ -14,19 +14,19 @@ import java.util.List;
  */
 public class BeansGraphResult {
 
-    private final UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge> dependencyGraph;
-    private final List<List<BeansGraphVertex>> cycles;
+    private final UnmodifiableDirectedGraph<Bean, DefaultEdge> dependencyGraph;
+    private final List<List<Bean>> cycles;
 
-    public BeansGraphResult(UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge> dependencyGraph, List<List<BeansGraphVertex>> cycles) {
+    public BeansGraphResult(UnmodifiableDirectedGraph<Bean, DefaultEdge> dependencyGraph, List<List<Bean>> cycles) {
         this.dependencyGraph = dependencyGraph;
         this.cycles = cycles;
     }
 
-    public List<List<BeansGraphVertex>> getCycles() {
+    public List<List<Bean>> getCycles() {
         return cycles;
     }
 
-    public UnmodifiableDirectedGraph<BeansGraphVertex, DefaultEdge> getDependencyGraph() {
+    public UnmodifiableDirectedGraph<Bean, DefaultEdge> getDependencyGraph() {
         return dependencyGraph;
     }
 }
