@@ -9,7 +9,7 @@ package com.headstartech.beansgraph;
  * @author Per Johansson
  * @since 1.0
  */
-public interface BeanGraphConfigurer {
+public interface BeansGraphConfigurer {
 
     void configureReporters(BeansGraphProducer graphSource);
 

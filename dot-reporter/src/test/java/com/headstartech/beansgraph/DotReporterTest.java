@@ -37,7 +37,7 @@ public class DotReporterTest {
 
     @EnableBeansGraph
     @Configuration("testConfigurer")
-    private static class TestConfigurer implements BeanGraphConfigurer {
+    private static class TestConfigurer implements BeansGraphConfigurer {
 
         private StringWriter stringWriter;
 

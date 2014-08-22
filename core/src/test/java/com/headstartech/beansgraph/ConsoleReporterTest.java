@@ -60,7 +60,7 @@ public class ConsoleReporterTest {
 
     @EnableBeansGraph
     @Configuration("testConfigurer")
-    private static class TestConfigurer implements BeanGraphConfigurer {
+    private static class TestConfigurer implements BeansGraphConfigurer {
 
         private StringWriter stringWriter;
 
@@ -82,7 +82,7 @@ public class ConsoleReporterTest {
 
     @EnableBeansGraph
     @Configuration("testConfigurer")
-    private static class TestConfigurerWithFilter implements BeanGraphConfigurer {
+    private static class TestConfigurerWithFilter implements BeansGraphConfigurer {
 
         private StringWriter stringWriter;
 

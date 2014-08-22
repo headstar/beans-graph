@@ -126,7 +126,7 @@ public class BeansGraphTest {
 
     @EnableBeansGraph
     @Configuration("testConfigurer")
-    private static class TestConfigurer implements BeanGraphConfigurer {
+    private static class TestConfigurer implements BeansGraphConfigurer {
 
         private TestListener testListener;
 

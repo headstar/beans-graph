@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * This is the class imported by {@link EnableBeansGraph @EnableBeanGraph}.
  *
- * @see BeanGraphConfigurer
+ * @see BeansGraphConfigurer
  * @see BeansGraphProducer
  * @author Per Johansson
  * @since 1.0
@@ -18,11 +18,11 @@ import java.util.List;
 @Configuration
 public class BeansGraphConfiguration {
 
-    private final List<BeanGraphConfigurer> configurers = new ArrayList<BeanGraphConfigurer>();
+    private final List<BeansGraphConfigurer> configurers = new ArrayList<BeansGraphConfigurer>();
     private BeansGraphProducer graphSource;
 
     @Autowired(required = false)
-    public void setDependencyConfigurers(final List<BeanGraphConfigurer> configurers) {
+    public void setDependencyConfigurers(final List<BeansGraphConfigurer> configurers) {
         if (configurers != null) {
             this.configurers.addAll(configurers);
         }
@@ -32,7 +32,7 @@ public class BeansGraphConfiguration {
     public BeansGraphProducer beansGraphProducer() {
         if (graphSource == null) {
             graphSource = new BeansGraphProducer();
-            for (BeanGraphConfigurer configurer : this.configurers) {
+            for (BeansGraphConfigurer configurer : this.configurers) {
                 configurer.configureReporters(graphSource);
             }
         }
