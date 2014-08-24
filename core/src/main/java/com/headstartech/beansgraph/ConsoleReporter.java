@@ -7,7 +7,6 @@ import org.springframework.util.StringUtils;
 
 import java.io.PrintWriter;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * A reporter which outputs the result to a {@link PrintWriter}, like {@code System.out}.
@@ -31,16 +30,16 @@ public class ConsoleReporter implements BeansGraphListener {
 
         private Builder(BeansGraphProducer source) {
             this.source = source;
-            withIgnoreCyclesOfLengthOne(true);
-            withOutput(new PrintWriter(System.out));
+            ignoreCyclesOfLengthOne(true);
+            toOutput(new PrintWriter(System.out));
         }
 
-        public Builder withIgnoreCyclesOfLengthOne(boolean ignoreCyclesOfLengthOne) {
+        public Builder ignoreCyclesOfLengthOne(boolean ignoreCyclesOfLengthOne) {
             this.ignoreCyclesOfLengthOne = ignoreCyclesOfLengthOne;
             return this;
         }
 
-        public Builder withOutput(PrintWriter out) {
+        public Builder toOutput(PrintWriter out) {
             this.out = out;
             return this;
         }

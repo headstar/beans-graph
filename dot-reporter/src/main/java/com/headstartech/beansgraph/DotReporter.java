@@ -26,11 +26,11 @@ public class DotReporter implements BeansGraphListener {
 
         private Builder(BeansGraphProducer source) {
             this.source = source;
-            withOutput(new PrintWriter(System.out));
+            toOutput(new PrintWriter(System.out));
         }
 
 
-        public Builder withOutput(Writer out) {
+        public Builder toOutput(Writer out) {
             this.out = out;
             return this;
         }

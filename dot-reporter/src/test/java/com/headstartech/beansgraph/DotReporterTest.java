@@ -48,7 +48,7 @@ public class DotReporterTest {
         public void configureReporters(BeansGraphProducer graphSource) {
             stringWriter = new StringWriter();
             DotReporter.forSource(graphSource)
-                    .withOutput(new PrintWriter(stringWriter))
+                    .toOutput(new PrintWriter(stringWriter))
                     .build();
 
         }

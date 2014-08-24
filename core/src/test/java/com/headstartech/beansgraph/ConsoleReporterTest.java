@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.regex.Pattern;
 
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertSame;
@@ -71,7 +70,7 @@ public class ConsoleReporterTest {
         public void configureReporters(BeansGraphProducer graphSource) {
             stringWriter = new StringWriter();
             ConsoleReporter.forSource(graphSource)
-                    .withOutput(new PrintWriter(stringWriter))
+                    .toOutput(new PrintWriter(stringWriter))
                     .build();
         }
 
@@ -93,7 +92,7 @@ public class ConsoleReporterTest {
         public void configureReporters(BeansGraphProducer graphSource) {
             stringWriter = new StringWriter();
             ConsoleReporter.forSource(graphSource)
-                    .withOutput(new PrintWriter(stringWriter))
+                    .toOutput(new PrintWriter(stringWriter))
                     .filter(new ClassNameFilter("com.headstartech"))
                     .build();
         }
