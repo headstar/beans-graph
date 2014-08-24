@@ -7,6 +7,8 @@ import java.util.Collection;
 /**
  * Filters beans on the fully qualified class name. If the class name starts with given prefixes the filter returns <code>true</code>, otherwise <code>false</code>.
  *
+ * @author Per Johansson
+ * @since 1.1
  */
 public class ClassNameFilter implements BeanFilter {
 

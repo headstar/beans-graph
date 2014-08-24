@@ -1,7 +1,10 @@
 package com.headstartech.beansgraph;
 
 /**
- * Created by per on 8/22/14.
+ * A filter used to determine whether or not a bean should be reported.
+ *
+ * @author Per Johansson
+ * @since 1.1
  */
 public interface BeanFilter {
 
