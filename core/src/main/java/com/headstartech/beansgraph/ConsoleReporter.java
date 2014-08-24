@@ -74,7 +74,6 @@ public class ConsoleReporter implements BeansGraphListener {
     }
 
     private void printCycles(ApplicationContext applicationContext, BeansGraphResult result) {
-        printSeparator();
         out.println("Circular dependencies in context " + StringUtils.quote(applicationContext.getDisplayName()));
         printSeparator();
         for (List<Bean> cycle : result.getCycles()) {
@@ -83,12 +82,10 @@ public class ConsoleReporter implements BeansGraphListener {
             }
             out.println("[" + formatVertices(cycle) + "]");
         }
-        printSeparator();
         out.flush();
     }
 
     private void printBeanDependencies(ApplicationContext applicationContext, BeansGraphResult result) {
-        printSeparator();
         out.println("Dependencies in context " + StringUtils.quote(applicationContext.getDisplayName()));
         printSeparator();
         Set<Bean> vertices = result.getDependencyGraph().vertexSet();
@@ -101,7 +98,6 @@ public class ConsoleReporter implements BeansGraphListener {
                 out.println();
             }
         }
-        printSeparator();
         out.flush();
     }
 

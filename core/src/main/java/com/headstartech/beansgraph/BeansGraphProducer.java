@@ -104,7 +104,7 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
         } catch(NoSuchBeanDefinitionException e) {
             // do nothing
         }
-        
+
         return res;
     }
 
