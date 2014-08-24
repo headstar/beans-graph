@@ -6,7 +6,7 @@ package com.headstartech.beansgraph;
  * @author Per Johansson
  * @since 1.0
  */
-public class Bean {
+class Bean {
     private final String name;
     private String className;
 

@@ -94,7 +94,7 @@ public class ConsoleReporterTest {
             stringWriter = new StringWriter();
             ConsoleReporter.forSource(graphSource)
                     .withOutput(new PrintWriter(stringWriter))
-                    .withClassNamePattern(Pattern.compile("com\\.headstartech\\..*"))
+                    .filter(new ClassNameFilter("com.headstartech"))
                     .build();
         }
 

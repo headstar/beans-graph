@@ -93,12 +93,12 @@ public class BeansGraphTest {
         assertNotNull(testListener.getGraphResult());
 
         BeansGraphResult result = testListener.getGraphResult();
-        Set<Bean> vertices = result.getDependencyGraph().vertexSet();
+        Set<Bean> beans = result.getDependencyGraph().vertexSet();
 
         boolean foo5Found = false;
-        for(Bean v : vertices) {
-            if(v.getName().equals("foo5")) {
-                assertEquals(v.getClassName(), Foo5.class.getName());
+        for(Bean bean : beans) {
+            if(bean.getName().equals("foo5")) {
+                assertEquals(bean.getClassName(), Foo5.class.getCanonicalName());
                 foo5Found = true;
             }
         }

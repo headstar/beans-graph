@@ -84,33 +84,30 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
         final List<String> res = new ArrayList<String>();
         res.addAll(Arrays.asList(factory.getDependenciesForBean(sourceBeanName)));
 
-        if(factory.containsBeanDefinition(sourceBeanName)) {
-            final Object bean = factory.getBean(sourceBeanName);
-            final Class<?> clazz = AopUtils.getTargetClass(bean);
-            ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
-                        public void doWith(Method method) {
-                            if (method.isAnnotationPresent(ManuallyWired.class)) {
-                                ManuallyWired manuallyWired = method.getAnnotation(ManuallyWired.class);
-                                for (String beanName : manuallyWired.beanNames()) {
-                                    if(beanName != null && !beanName.isEmpty()) {
-                                        res.add(beanName);
-                                    }
+        final Object bean = factory.getBean(sourceBeanName);
+        final Class<?> clazz = AopUtils.getTargetClass(bean);
+        ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
+                    public void doWith(Method method) {
+                        if (method.isAnnotationPresent(ManuallyWired.class)) {
+                            ManuallyWired manuallyWired = method.getAnnotation(ManuallyWired.class);
+                            for (String beanName : manuallyWired.beanNames()) {
+                                if(beanName != null && !beanName.isEmpty()) {
+                                    res.add(beanName);
                                 }
                             }
                         }
                     }
-            );
-        }
+                }
+        );
 
         return res;
     }
 
     private Bean createBeanVertex(final ConfigurableListableBeanFactory factory, String beanName) {
         Bean res = new Bean(beanName);
-        if(factory.containsBeanDefinition(beanName)) {
-            BeanDefinition bd = factory.getBeanDefinition(beanName);
-            res.setClassName(bd.getBeanClassName());
-        }
+        final Object bean = factory.getBean(beanName);
+        final Class<?> clazz = AopUtils.getTargetClass(bean);
+        res.setClassName(clazz.getCanonicalName());
         return res;
     }
 }
