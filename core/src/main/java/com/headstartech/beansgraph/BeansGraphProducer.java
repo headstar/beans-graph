@@ -8,6 +8,7 @@ import org.jgrapht.graph.UnmodifiableDirectedGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -105,9 +106,13 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
 
     private Bean createBeanVertex(final ConfigurableListableBeanFactory factory, String beanName) {
         Bean res = new Bean(beanName);
-        final Object bean = factory.getBean(beanName);
-        final Class<?> clazz = AopUtils.getTargetClass(bean);
-        res.setClassName(clazz.getCanonicalName());
+        try {
+            final Object bean = factory.getBean(beanName);
+            final Class<?> clazz = AopUtils.getTargetClass(bean);
+            res.setClassName(clazz.getCanonicalName());
+        } catch(NoSuchBeanDefinitionException e) {
+            // do nothing
+        }
         return res;
     }
 }
