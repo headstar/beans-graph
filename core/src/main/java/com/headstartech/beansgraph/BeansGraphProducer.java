@@ -85,30 +85,34 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
         final List<String> res = new ArrayList<String>();
         res.addAll(Arrays.asList(factory.getDependenciesForBean(sourceBeanName)));
 
-        final Object bean = factory.getBean(sourceBeanName);
-        final Class<?> clazz = AopUtils.getTargetClass(bean);
-        ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
-                    public void doWith(Method method) {
-                        if (method.isAnnotationPresent(ManuallyWired.class)) {
-                            ManuallyWired manuallyWired = method.getAnnotation(ManuallyWired.class);
-                            for (String beanName : manuallyWired.beanNames()) {
-                                if(beanName != null && !beanName.isEmpty()) {
-                                    res.add(beanName);
+        try {
+            Object bean = factory.getBean(sourceBeanName);
+            Class<?> clazz = AopUtils.getTargetClass(bean);
+            ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
+                        public void doWith(Method method) {
+                            if (method.isAnnotationPresent(ManuallyWired.class)) {
+                                ManuallyWired manuallyWired = method.getAnnotation(ManuallyWired.class);
+                                for (String beanName : manuallyWired.beanNames()) {
+                                    if(beanName != null && !beanName.isEmpty()) {
+                                        res.add(beanName);
+                                    }
                                 }
                             }
                         }
                     }
-                }
-        );
-
+            );
+        } catch(NoSuchBeanDefinitionException e) {
+            // do nothing
+        }
+        
         return res;
     }
 
     private Bean createBeanVertex(final ConfigurableListableBeanFactory factory, String beanName) {
         Bean res = new Bean(beanName);
         try {
-            final Object bean = factory.getBean(beanName);
-            final Class<?> clazz = AopUtils.getTargetClass(bean);
+            Object bean = factory.getBean(beanName);
+            Class<?> clazz = AopUtils.getTargetClass(bean);
             res.setClassName(clazz.getCanonicalName());
         } catch(NoSuchBeanDefinitionException e) {
             // do nothing
