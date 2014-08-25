@@ -1,8 +1,8 @@
 package com.headstartech.beansgraph;
 
+import org.jgrapht.ext.DOTExporter;
 import org.jgrapht.ext.VertexNameProvider;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.ext.DOTExporter;
 import org.springframework.context.ApplicationContext;
 
 import java.io.PrintWriter;

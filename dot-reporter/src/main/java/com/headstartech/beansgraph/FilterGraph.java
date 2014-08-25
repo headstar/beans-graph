@@ -4,7 +4,6 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.UnmodifiableDirectedGraph;
 
 /**
  * Graph utility

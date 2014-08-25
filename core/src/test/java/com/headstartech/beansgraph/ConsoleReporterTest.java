@@ -9,8 +9,6 @@ import org.testng.annotations.Test;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertTrue;
 import static org.testng.AssertJUnit.assertFalse;
 

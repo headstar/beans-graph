@@ -13,11 +13,12 @@ import org.springframework.stereotype.Component;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertSame;
+import static org.testng.Assert.*;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class BeansGraphTest {
