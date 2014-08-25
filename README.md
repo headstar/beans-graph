@@ -61,12 +61,12 @@ Add dependency:
 </dependency>
 ```
 
-Configure dot reporter:
+Configure:
 ```java
  @Override
  public void configureReporters(BeansGraphProducer producer) {
         DotReporter.forSource(producer)
-            .filter(new ClassNameFilter(""org.foo.bar"))
+            .filter(new ClassNameFilter("org.foo.bar"))
             .toOutput(new PrintWriter(new File("/tmp/dep.dot")))
             .build();
 }
