@@ -12,13 +12,12 @@ Current version is 1.1.0.
 ```xml
 <dependency>
     <groupId>com.headstartech.beansgraph</groupId>
-    <artifactId>beans-graph-core</artifactId>
+    <artifactId>beansgraph-core</artifactId>
     <version>1.1.0</version>
 </dependency>
 ```
 
-###Usage
-
+### Basic usage
 
 Java annotation configuration:
 
@@ -49,7 +48,29 @@ Filter on class name:
         .build();
 }
 ```
+### Dot reporter
 
+To be able to generate an image with the dependencies, configure the dot reporter (http://en.wikipedia.org/wiki/DOT_%28graph_description_language%29).
+
+Add dependency:
+```xml
+<dependency>
+    <groupId>com.headstartech.beansgraph</groupId>
+    <artifactId>beansgraph-dot-reporter</artifactId>
+    <version>1.1.0</version>
+</dependency>
+```
+
+Configure dot reporter:
+```java
+ @Override
+ public void configureReporters(BeansGraphProducer producer) {
+        DotReporter.forSource(producer)
+            .filter(new ClassNameFilter(""org.foo.bar"))
+            .toOutput(new PrintWriter(new File("/tmp/dep.dot")))
+            .build();
+}
+```
 
 ###License
 
