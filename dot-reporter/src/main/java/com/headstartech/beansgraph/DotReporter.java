@@ -23,6 +23,7 @@ public class DotReporter implements BeansGraphListener {
     public static class Builder {
         private final BeansGraphProducer source;
         private Writer out;
+        private BeanFilter filter;
 
         private Builder(BeansGraphProducer source) {
             this.source = source;
@@ -35,15 +36,22 @@ public class DotReporter implements BeansGraphListener {
             return this;
         }
 
+        public Builder filter(BeanFilter filter) {
+            this.filter = filter;
+            return this;
+        }
+
         public DotReporter build() {
-            return new DotReporter(source, out);
+            return new DotReporter(source, out, filter);
         }
     }
 
     private final Writer out;
+    private final BeanFilter filter;
 
-    private DotReporter(BeansGraphProducer source, Writer out) {
+    private DotReporter(BeansGraphProducer source, Writer out, BeanFilter filter) {
         this.out = out;
+        this.filter = filter;
         source.addListener(this);
     }
 
@@ -52,7 +60,7 @@ public class DotReporter implements BeansGraphListener {
     public void onBeanGraphResult(ApplicationContext applicationContext, BeansGraphResult result) {
         DOTExporter<Bean, DefaultEdge> exporter = new DOTExporter<Bean, DefaultEdge>(new BeanVertexIdProvider(),
                 new BeanVertexNameProvider(), null);
-        exporter.export(out, result.getDependencyGraph());
+        exporter.export(out, FilterGraph.filterGraph(result.getDependencyGraph(), filter));
     }
 
     private static class BeanVertexNameProvider implements VertexNameProvider<Bean> {
