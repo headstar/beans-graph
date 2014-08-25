@@ -7,13 +7,13 @@ The `spring-beans-graph` library creates a graph of the bean dependencies in you
 
 ###Maven
 
-Current version is 1.0.0.
+Current version is 1.1.0.
 
 ```xml
 <dependency>
     <groupId>com.headstartech.beansgraph</groupId>
     <artifactId>beans-graph-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -45,7 +45,7 @@ Filter on class name:
  @Override
  public void configureReporters(BeansGraphProducer producer) {
         ConsoleReporter.forSource(producer)
-        .withClassNamePattern(Pattern.compile("com\\.foo\\..*"))
+        .filter(new ClassNameFilter("org.foo.bar"))
         .build();
 }
 ```
