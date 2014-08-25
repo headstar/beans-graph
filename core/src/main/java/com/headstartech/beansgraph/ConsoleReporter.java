@@ -34,16 +34,34 @@ public class ConsoleReporter implements BeansGraphListener {
             toOutput(new PrintWriter(System.out));
         }
 
+        /**
+         * Ignore object referring to themselves when reporting dependency cycles.
+         *
+         * @param ignoreCyclesOfLengthOne
+         * @return
+         */
         public Builder ignoreCyclesOfLengthOne(boolean ignoreCyclesOfLengthOne) {
             this.ignoreCyclesOfLengthOne = ignoreCyclesOfLengthOne;
             return this;
         }
 
+        /**
+         * Write to the given {@link java.io.PrintWriter}.
+         *
+         * @param out a {@link java.io.PrintWriter} instance.
+         * @return {@code this}
+         */
         public Builder toOutput(PrintWriter out) {
             this.out = out;
             return this;
         }
 
+        /**
+         * Only report metrics which match the given filter.
+         *
+         * @param filter a {@link BeanFilter}
+         * @return {@code this}
+         */
         public Builder filter(BeanFilter filter) {
             this.filter = filter;
             return this;

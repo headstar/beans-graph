@@ -30,12 +30,23 @@ public class DotReporter implements BeansGraphListener {
             toOutput(new PrintWriter(System.out));
         }
 
-
+        /**
+         * Write to the given {@link java.io.Writer}.
+         *
+         * @param out a {@link java.io.Writer} instance.
+         * @return {@code this}
+         */
         public Builder toOutput(Writer out) {
             this.out = out;
             return this;
         }
 
+        /**
+         * Only report metrics which match the given filter.
+         *
+         * @param filter a {@link BeanFilter}
+         * @return {@code this}
+         */
         public Builder filter(BeanFilter filter) {
             this.filter = filter;
             return this;
