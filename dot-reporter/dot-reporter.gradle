@@ -61,6 +61,6 @@ nexus {
     attachSources = true
     attachTests = false
     attachJavadoc = true
-    sign = false
+    sign = true
     snapshotRepositoryUrl = 'http://localhost:8081/nexus/content/repositories/snapshots/'
 }
