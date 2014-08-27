@@ -57,6 +57,7 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
     private UnmodifiableDirectedGraph<Bean, DefaultEdge> createDependencyGraph(ApplicationContext context) {
         DirectedGraph<Bean, DefaultEdge> graph = new DefaultDirectedGraph<Bean, DefaultEdge>(DefaultEdge.class);
         if (!(context instanceof AbstractApplicationContext)) {
+            log.info("ApplicationContext not instance of {}", AbstractApplicationContext.class.getName());
             return new UnmodifiableDirectedGraph<Bean, DefaultEdge>(graph);
         }
 
