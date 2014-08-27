@@ -119,6 +119,7 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
         if(factory.containsBeanDefinition(beanName)) {
             BeanDefinition def = factory.getBeanDefinition(beanName);
             if(def.isAbstract()) {
+                log.debug("{} is an abstract bean, skipping", beanName);
                 return null;
             }
         }
