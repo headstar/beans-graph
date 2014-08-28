@@ -109,7 +109,8 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
                     }
             );
         } catch(BeansException e) {
-            // do nothing
+            // do nothing, just log
+            log.debug("failed to get bean: bean={}, rootCause={}", sourceBeanName, e.getRootCause().getMessage());
         }
 
         return res;
@@ -129,7 +130,8 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
             Class<?> clazz = AopUtils.getTargetClass(bean);
             res.setClassName(clazz.getCanonicalName());
         } catch(BeansException e) {
-            // do nothing
+            // do nothing, just log
+            log.debug("failed to get bean: bean={}, rootCause={}", beanName, e.getRootCause().getMessage());
         }
         return res;
     }
