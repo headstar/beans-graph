@@ -13,7 +13,7 @@ Current version is 1.1.2.
 ```xml
 <dependency>
     <groupId>com.headstartech.beansgraph</groupId>
-    <artifactId>beans-graph-core</artifactId>
+    <artifactId>beansgraph-core</artifactId>
     <version>1.1.2</version>
 </dependency>
 ```
