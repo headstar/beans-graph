@@ -7,13 +7,13 @@ The `spring-beans-graph` library creates a graph of the bean dependencies in you
 
 ###Maven
 
-Current version is 1.0.0.
+Current version is 1.1.2.
 
 ```xml
 <dependency>
     <groupId>com.headstartech.beansgraph</groupId>
     <artifactId>beans-graph-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.2</version>
 </dependency>
 ```
 
@@ -23,14 +23,14 @@ Current version is 1.0.0.
 Java annotation configuration:
 
 ```java
-import org.headstar.beansgraph.BeansGraphProducer;
-import org.headstar.beansgraph.ConsoleReporter;
-import org.headstar.beansgraph.EnableBeansGraph;
+import com.headstartech.beansgraph.BeansGraphProducer;
+import com.headstartech.beansgraph.ConsoleReporter;
+import com.headstartech.beansgraph.EnableBeansGraph;
 import org.springframework.stereotype.Component;
 
 @EnableBeansGraph
 @Component
-public class ConfigureBeanGraphReporters implements org.headstar.beansgraph.BeanGraphConfigurer {
+public class ConfigureBeanGraphReporters implements BeansGraphConfigurer {
 
     @Override
     public void configureReporters(BeansGraphProducer producer) {
@@ -45,7 +45,7 @@ Filter on class name:
  @Override
  public void configureReporters(BeansGraphProducer producer) {
         ConsoleReporter.forSource(producer)
-        .withClassNamePattern(Pattern.compile("com\\.foo\\..*"))
+        .filter(new ClassNameFilter("com.foo"))
         .build();
 }
 ```
