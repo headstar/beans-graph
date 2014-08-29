@@ -8,7 +8,9 @@ import org.jgrapht.graph.UnmodifiableDirectedGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -55,6 +57,7 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
     private UnmodifiableDirectedGraph<Bean, DefaultEdge> createDependencyGraph(ApplicationContext context) {
         DirectedGraph<Bean, DefaultEdge> graph = new DefaultDirectedGraph<Bean, DefaultEdge>(DefaultEdge.class);
         if (!(context instanceof AbstractApplicationContext)) {
+            log.info("ApplicationContext not instance of {}", AbstractApplicationContext.class.getName());
             return new UnmodifiableDirectedGraph<Bean, DefaultEdge>(graph);
         }
 
@@ -62,18 +65,23 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
 
         Queue<Bean> queue = new ArrayDeque<Bean>();
         for (String beanName : factory.getBeanDefinitionNames()) {
-            queue.add(createBeanVertex(factory, beanName));
+            Bean bv = createBeanVertex(factory, beanName);
+            if(bv != null) {
+                queue.add(bv);
+            }
         }
         while (!queue.isEmpty()) {
-            Bean b = queue.remove();
-            graph.addVertex(b);
-            for (String dependency : getDependenciesForBean(factory, b.getName())) {
-                Bean dep = createBeanVertex(factory, dependency);
-                if (!graph.containsVertex(dep)) {
-                    graph.addVertex(dep);
-                    queue.add(dep);
+            Bean bv = queue.remove();
+            graph.addVertex(bv);
+            for (String dependency : getDependenciesForBean(factory, bv.getName())) {
+                Bean depBV = createBeanVertex(factory, dependency);
+                if(depBV != null) {
+                    if (!graph.containsVertex(depBV)) {
+                        graph.addVertex(depBV);
+                        queue.add(depBV);
+                    }
+                    graph.addEdge(bv, depBV);
                 }
-                graph.addEdge(b, dep);
             }
         }
 
@@ -100,21 +108,30 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
                         }
                     }
             );
-        } catch(NoSuchBeanDefinitionException e) {
-            // do nothing
+        } catch(BeansException e) {
+            // do nothing, just log
+            log.debug("failed to get bean: bean={}, cause={}", sourceBeanName, e.getMostSpecificCause().getMessage());
         }
 
         return res;
     }
 
     private Bean createBeanVertex(final ConfigurableListableBeanFactory factory, String beanName) {
+        if(factory.containsBeanDefinition(beanName)) {
+            BeanDefinition def = factory.getBeanDefinition(beanName);
+            if(def.isAbstract()) {
+                log.debug("{} is an abstract bean, skipping", beanName);
+                return null;
+            }
+        }
         Bean res = new Bean(beanName);
         try {
             Object bean = factory.getBean(beanName);
             Class<?> clazz = AopUtils.getTargetClass(bean);
             res.setClassName(clazz.getCanonicalName());
-        } catch(NoSuchBeanDefinitionException e) {
-            // do nothing
+        } catch(BeansException e) {
+            // do nothing, just log
+            log.debug("failed to get bean: bean={}, cause={}", beanName, e.getMostSpecificCause().getMessage());
         }
         return res;
     }

@@ -1,4 +1,5 @@
-##Spring beans graph [![Build Status](https://travis-ci.org/headstar/spring-beans-graph.svg?branch=master)](https://travis-ci.org/headstar/spring-beans-graph)
+##Spring beans graph 
+[![Build Status](https://travis-ci.org/headstar/spring-beans-graph.svg?branch=master)](https://travis-ci.org/headstar/spring-beans-graph)
 
 The `spring-beans-graph` library creates a graph of the bean dependencies in your Spring application. The dependencies are collected at runtime. The library will help you:
 
@@ -7,29 +8,30 @@ The `spring-beans-graph` library creates a graph of the bean dependencies in you
 
 ###Maven
 
-Current version is 1.1.0.
+Current version is 1.1.2.
 
 ```xml
 <dependency>
     <groupId>com.headstartech.beansgraph</groupId>
     <artifactId>beansgraph-core</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.2</version>
 </dependency>
 ```
 
 ### Basic usage
 
+
 Java annotation configuration:
 
 ```java
-import org.headstar.beansgraph.BeansGraphProducer;
-import org.headstar.beansgraph.ConsoleReporter;
-import org.headstar.beansgraph.EnableBeansGraph;
+import com.headstartech.beansgraph.BeansGraphProducer;
+import com.headstartech.beansgraph.ConsoleReporter;
+import com.headstartech.beansgraph.EnableBeansGraph;
 import org.springframework.stereotype.Component;
 
 @EnableBeansGraph
 @Component
-public class ConfigureBeanGraphReporters implements org.headstar.beansgraph.BeanGraphConfigurer {
+public class ConfigureBeanGraphReporters implements BeansGraphConfigurer {
 
     @Override
     public void configureReporters(BeansGraphProducer producer) {
@@ -44,7 +46,7 @@ Filter on class name:
  @Override
  public void configureReporters(BeansGraphProducer producer) {
         ConsoleReporter.forSource(producer)
-        .filter(new ClassNameFilter("org.foo.bar"))
+        .filter(new ClassNameFilter("com.foo"))
         .build();
 }
 ```
