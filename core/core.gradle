@@ -11,4 +11,9 @@ test {
     useTestNG()
 }
 
+modifyPom {
+    project {
+        description 'Core library generating a graph of Spring bean dependencies'
+    }
+}
 

@@ -11,3 +11,9 @@ dependencies {
 test {
     useTestNG()
 }
+
+modifyPom {
+    project {
+        description 'Reporter outputting the bean dependencies to a .dot file'
+    }
+}
