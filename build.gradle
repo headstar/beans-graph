@@ -50,6 +50,7 @@ javaProjects.each {
 
 cobertura {
     coverageMergeDatafiles = coverageDatafiles
+    coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
 }
 
 test.dependsOn(childTestTasks)
