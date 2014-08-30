@@ -4,15 +4,15 @@ group = 'com.headstartech.beansgraph'
 
 modifyPom {
     project {
-        name 'Spring beans graph'
+        name 'Beans graph'
         description 'Core library generating a graph of Spring bean dependencies'
-        url 'https://github.com/headstar/spring-beans-graph'
+        url 'https://github.com/headstar/beans-graph'
         inceptionYear '2014'
 
         scm {
-            url 'https://github.com/headstar/spring-beans-graph'
-            connection 'scm:https://github.com/headstar/spring-beans-graph.git'
-            developerConnection 'scm:git@github.com:headstar/spring-beans-graph.git'
+            url 'https://github.com/headstar/beans-graph'
+            connection 'scm:https://github.com/headstar/beans-graph.git'
+            developerConnection 'scm:git@github.com:headstar/beans-graph.git'
         }
 
         licenses {
@@ -27,7 +27,7 @@ modifyPom {
             developer {
                 id 'per'
                 name 'Per Johansson'
-                email 'per.johansson@post.com'
+                email 'per@headstartech.com'
             }
         }
     }
