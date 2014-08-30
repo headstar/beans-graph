@@ -1,6 +1,7 @@
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'cobertura'
+apply plugin: 'com.github.kt3k.coveralls'
 
 buildscript {
     repositories {
@@ -23,7 +24,7 @@ ext.javaProjects = subprojects
 configure(javaProjects) {
     apply from: "$rootDir/gradle/javaprojects.gradle"
     apply from: "$rootDir/gradle/archive.gradle"
-    apply from: "$rootDir/gradle/coveralls.gradle"
+    apply from: "$rootDir/gradle/cobertura.gradle"
 }
 
 allprojects {

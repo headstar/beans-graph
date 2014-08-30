@@ -1,4 +1,3 @@
 apply plugin: 'cobertura'
-apply plugin: 'com.github.kt3k.coveralls'
 
 cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
