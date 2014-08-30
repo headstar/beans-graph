@@ -1,3 +1,6 @@
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
 buildscript {
     repositories {
         jcenter()
@@ -23,11 +26,16 @@ configure(javaProjects) {
 }
 
 allprojects {
-    apply plugin: 'idea'
-    apply plugin: 'eclipse'
-
-
     repositories {
         mavenCentral()
+    }
+
+
+}
+
+idea {
+    project {
+        jdkName = '1.7'
+        languageLevel = '1.6'
     }
 }
