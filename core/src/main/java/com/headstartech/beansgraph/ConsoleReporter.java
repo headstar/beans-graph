@@ -37,8 +37,8 @@ public class ConsoleReporter implements BeansGraphListener {
         /**
          * Ignore object referring to themselves when reporting dependency cycles.
          *
-         * @param ignoreCyclesOfLengthOne
-         * @return
+         * @param ignoreCyclesOfLengthOne {@code true} if cycles of length 1 should be ignored
+         * @return {@code this}
          */
         public Builder ignoreCyclesOfLengthOne(boolean ignoreCyclesOfLengthOne) {
             this.ignoreCyclesOfLengthOne = ignoreCyclesOfLengthOne;
