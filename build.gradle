@@ -1,10 +1,12 @@
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
     }
     dependencies {
         classpath "net.saliman:gradle-cobertura-plugin:2.2.4"
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0'
+        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7.1'
     }
 }
 
@@ -16,11 +18,8 @@ ext.javaProjects = subprojects
 
 configure(javaProjects) {
     apply from: "$rootDir/gradle/javaprojects.gradle"
-
-    apply plugin: 'cobertura'
-    apply plugin: 'com.github.kt3k.coveralls'
-
-    cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
+    apply from: "$rootDir/gradle/archive.gradle"
+    apply from: "$rootDir/gradle/coveralls.gradle"
 }
 
 allprojects {
@@ -32,5 +31,3 @@ allprojects {
         mavenCentral()
     }
 }
-
-group = 'com.headstartech.beansgraph'
