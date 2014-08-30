@@ -1,5 +1,6 @@
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+apply plugin: 'cobertura'
 
 buildscript {
     repositories {
@@ -39,3 +40,16 @@ idea {
         languageLevel = '1.6'
     }
 }
+
+def childTestTasks = []
+def coverageDatafiles = []
+javaProjects.each {
+    coverageDatafiles << it.file("build/cobertura/cobertura.ser")
+    childTestTasks << "${it.name}:test"
+}
+
+cobertura {
+    coverageMergeDatafiles = coverageDatafiles
+}
+
+test.dependsOn(childTestTasks)
