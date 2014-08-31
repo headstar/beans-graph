@@ -44,14 +44,20 @@ idea {
 
 def childTestTasks = []
 def coverageDatafiles = []
+def coverallsSourceDirs = []
 javaProjects.each {
     coverageDatafiles << it.file("build/cobertura/cobertura.ser")
     childTestTasks << "${it.name}:test"
+    coverallsSourceDirs << it.file("src/main/java").path
 }
 
 cobertura {
     coverageMergeDatafiles = coverageDatafiles
     coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
+}
+
+coveralls {
+    sourceDirs = coverallsSourceDirs
 }
 
 test.dependsOn(childTestTasks)
