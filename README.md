@@ -59,7 +59,7 @@ Add dependency:
 <dependency>
     <groupId>com.headstartech.beansgraph</groupId>
     <artifactId>beansgraph-dot-reporter</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0.RELEASE</version>
 </dependency>
 ```
 
