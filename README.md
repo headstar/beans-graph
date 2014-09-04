@@ -8,13 +8,13 @@ The `beans-graph` library creates a graph of the bean dependencies in your Sprin
 
 ###Maven
 
-Current version is 1.1.2.
+Current version is 1.2.0.
 
 ```xml
 <dependency>
     <groupId>com.headstartech.beansgraph</groupId>
     <artifactId>beansgraph-core</artifactId>
-    <version>1.1.2</version>
+    <version>1.2.0.RELEASE</version>
 </dependency>
 ```
 
