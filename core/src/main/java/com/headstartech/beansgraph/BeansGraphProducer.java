@@ -93,21 +93,22 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
         res.addAll(Arrays.asList(factory.getDependenciesForBean(sourceBeanName)));
 
         try {
-            Object bean = factory.getBean(sourceBeanName);
-            Class<?> clazz = AopUtils.getTargetClass(bean);
-            ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
-                        public void doWith(Method method) {
-                            if (method.isAnnotationPresent(ManuallyWired.class)) {
-                                ManuallyWired manuallyWired = method.getAnnotation(ManuallyWired.class);
-                                for (String beanName : manuallyWired.beanNames()) {
-                                    if(beanName != null && !beanName.isEmpty()) {
-                                        res.add(beanName);
+            Class<?> clazz = getClass(factory, sourceBeanName);
+            if(clazz != null) {
+                ReflectionUtils.doWithMethods(clazz, new ReflectionUtils.MethodCallback() {
+                            public void doWith(Method method) {
+                                if (method.isAnnotationPresent(ManuallyWired.class)) {
+                                    ManuallyWired manuallyWired = method.getAnnotation(ManuallyWired.class);
+                                    for (String beanName : manuallyWired.beanNames()) {
+                                        if (beanName != null && !beanName.isEmpty()) {
+                                            res.add(beanName);
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-            );
+                );
+            }
         } catch(BeansException e) {
             // do nothing, just log
             log.debug("failed to get bean: bean={}, cause={}", sourceBeanName, e.getMostSpecificCause().getMessage());
@@ -126,13 +127,23 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
         }
         Bean res = new Bean(beanName);
         try {
-            Object bean = factory.getBean(beanName);
-            Class<?> clazz = AopUtils.getTargetClass(bean);
-            res.setClassName(clazz.getCanonicalName());
+            Class<?> clazz = getClass(factory, beanName);
+            if(clazz != null) {
+                res.setClassName(clazz.getCanonicalName());
+            }
         } catch(BeansException e) {
             // do nothing, just log
             log.debug("failed to get bean: bean={}, cause={}", beanName, e.getMostSpecificCause().getMessage());
         }
         return res;
+    }
+
+    private Class<?> getClass(ConfigurableListableBeanFactory factory, String beanName) {
+        Object bean = factory.getBean(beanName);
+        if(bean == null) {
+            return null;
+        }
+        Class<?> clazz = AopUtils.getTargetClass(bean);
+        return clazz;
     }
 }
