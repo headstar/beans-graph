@@ -4,12 +4,8 @@ dependencies {
             "org.slf4j:slf4j-api:$slf4jApiVersion",
             project(':beansgraph-core')
 
-    testCompile "org.testng:testng:$testngVersion"
+    testCompile "junit:junit:$junitVersion"
     testRuntime "ch.qos.logback:logback-classic:$logbackClassicVersion"
-}
-
-test {
-    useTestNG()
 }
 
 modifyPom {

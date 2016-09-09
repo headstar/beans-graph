@@ -2,6 +2,7 @@ package com.headstartech.beansgraph;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.UnmodifiableGraph;
+import org.junit.Test;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,16 +11,15 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.testng.Assert.*;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.Assert.*;
+
 
 public class BeansGraphTest {
 
@@ -104,7 +104,7 @@ public class BeansGraphTest {
             }
         }
 
-        Assert.assertTrue(foo5Found);
+        assertTrue(foo5Found);
     }
 
 
@@ -122,7 +122,7 @@ public class BeansGraphTest {
             assertTrue(String.format("%s depends on %s", source, target), actualTargetVertices.contains(targetVertex));
             actualTargetVertices.remove(targetVertex);
         }
-        assertEquals(actualTargetVertices, new HashSet<Bean>(), String.format("no unexpected dependencies for %s", source));
+        assertEquals(String.format("no unexpected dependencies for %s", source), actualTargetVertices, new HashSet<Bean>());
     }
 
     @EnableBeansGraph

@@ -1,16 +1,17 @@
 package com.headstartech.beansgraph;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import org.testng.annotations.Test;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import static org.testng.Assert.assertTrue;
-import static org.testng.AssertJUnit.assertFalse;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 
 /**
  * Created by per on 8/15/14.
