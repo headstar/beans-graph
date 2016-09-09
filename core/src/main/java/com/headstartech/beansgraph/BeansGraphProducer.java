@@ -51,7 +51,11 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
 
         BeansGraphResult result = new BeansGraphResult(dependencyGraph, Collections.unmodifiableList(cycles));
         for (BeansGraphListener listener : listeners) {
-            listener.onBeanGraphResult(applicationContext, result);
+            try {
+                listener.onBeanGraphResult(applicationContext, result);
+            } catch(Throwable t) {
+                log.warn("Listener throw exception", t);
+            }
         }
     }
 
@@ -117,10 +121,12 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
             log.debug("failed to get bean: bean={}, cause={}", sourceBeanName, e.getMostSpecificCause().getMessage());
         }
 
-        // If the source bean was produced by a FactoryBean, add the FactoryBean as a dependency
+        // If the source bean was created by a FactoryBean, add the FactoryBean as a dependency
         try {
             BeanDefinition bd = factory.getBeanDefinition(sourceBeanName);
-            if(bd.getBeanClassName() != null) {
+            if(bd.getFactoryBeanName() != null) {
+                res.add(bd.getFactoryBeanName());
+            } else if(bd.getBeanClassName() != null) {  // sometimes factoryBeanName is null even though the bean was created by a factory
                 Class<?> beanClass = Class.forName(bd.getBeanClassName());
                 if(FactoryBean.class.isAssignableFrom(beanClass) && !sourceBeanName.equals(bd.getBeanClassName())) {
                     Map<String, ?> m = factory.getBeansOfType(beanClass);
