@@ -17,6 +17,8 @@ import java.util.*;
 public class ConsoleReporter implements BeansGraphListener {
 
     private final static int WIDTH = 140;
+    private final static String DEPENDENCY_LIST_SEPARATOR = ",";
+    private final static String CYCLE_LIST_SEPARATOR = "->";
 
     public static Builder forSource(BeansGraphProducer source) {
         return new Builder(source);
@@ -97,7 +99,12 @@ public class ConsoleReporter implements BeansGraphListener {
             if(ignoreCyclesOfLengthOne && cycle.size() == 1) {
                 continue;
             }
-            out.println("[" + formatVertices(cycle) + "]");
+            List<Bean> copy = new ArrayList<Bean>();
+            copy.addAll(cycle);
+            copy.add(copy.get(0));
+            String formatted = formatVertices(copy, CYCLE_LIST_SEPARATOR);
+            formatted = formatted + CYCLE_LIST_SEPARATOR + "...";
+            out.println("[" + formatted + "]");
         }
         out.flush();
     }
@@ -111,7 +118,7 @@ public class ConsoleReporter implements BeansGraphListener {
             if(filter == null || filter.matches(v)) {
                 Collection<Bean> dependencies = getOrderedVertexSet(collectTargetVertices(graph, v));
                 Collection<Bean> dependents = getOrderedVertexSet(collectSourceVertices(graph, v));
-                out.format("%s: ->[%s], <-[%s]", v.getName(), formatVertices(dependencies), formatVertices(dependents));
+                out.format("%s: ->[%s], <-[%s]", v.getName(), formatVertices(dependencies, DEPENDENCY_LIST_SEPARATOR), formatVertices(dependents, DEPENDENCY_LIST_SEPARATOR));
                 out.println();
             }
         }
@@ -135,12 +142,12 @@ public class ConsoleReporter implements BeansGraphListener {
     }
 
 
-    private String formatVertices(Collection<Bean> vertices) {
+    private String formatVertices(Collection<Bean> vertices, String separator) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         for (Bean v : vertices) {
             if (!first) {
-                sb.append(",");
+                sb.append(separator);
             }
             sb.append(v.getName());
             first = false;
