@@ -49,7 +49,9 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
         JohnsonSimpleCycles<Bean, DefaultEdge> cyclesFinder = new JohnsonSimpleCycles<Bean, DefaultEdge>(dependencyGraph);
         List<List<Bean>> cycles = cyclesFinder.findSimpleCycles();
 
-        BeansGraphResult result = new BeansGraphResult(dependencyGraph, Collections.unmodifiableList(cycles));
+        List<List<Bean>> cyclesInDependencyOrder = fixBeanOrderInCycles(dependencyGraph, cycles);
+
+        BeansGraphResult result = new BeansGraphResult(dependencyGraph, Collections.unmodifiableList(cyclesInDependencyOrder));
         for (BeansGraphListener listener : listeners) {
             try {
                 listener.onBeanGraphResult(applicationContext, result);
@@ -57,6 +59,29 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
                 log.warn("Listener throw exception", t);
             }
         }
+    }
+
+    // make sure the list of bean in a cycles is in dependency order (first bean depends on second bean, etc...)
+    private List<List<Bean>> fixBeanOrderInCycles(UnmodifiableDirectedGraph<Bean, DefaultEdge> graph, List<List<Bean>> cycles) {
+        List<List<Bean>> res = new ArrayList<List<Bean>>();
+        for(List<Bean> cycle : cycles) {
+            res.add(fixBeanOrderInCycle(graph, cycle));
+        }
+        return res;
+    }
+
+    private List<Bean> fixBeanOrderInCycle(UnmodifiableDirectedGraph<Bean, DefaultEdge> graph, List<Bean> cycle) {
+        List<Bean> res = cycle;
+        if(cycle.size() > 1) {
+            if(graph.getEdge(cycle.get(0), cycle.get(1)) == null) {
+                // cycle order is reversed, need to reverse the list
+                List<Bean> reversed = new ArrayList<Bean>(cycle.size());
+                reversed.addAll(cycle);
+                Collections.reverse(reversed);
+                res = reversed;
+            }
+        }
+        return res;
     }
 
     private UnmodifiableDirectedGraph<Bean, DefaultEdge> createDependencyGraph(ApplicationContext context) {

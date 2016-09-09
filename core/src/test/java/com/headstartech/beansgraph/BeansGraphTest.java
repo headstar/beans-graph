@@ -254,9 +254,9 @@ public class BeansGraphTest {
 
     private List<Bean> getExpectedCycle() {
         List<Bean> res = new ArrayList<Bean>();
-        res.add(new Bean("foo3"));
-        res.add(new Bean("foo2"));
         res.add(new Bean("foo1"));
+        res.add(new Bean("foo2"));
+        res.add(new Bean("foo3"));
         return res;
     }
 }
