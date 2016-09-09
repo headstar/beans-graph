@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AbstractFactoryBean;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -13,10 +15,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.PrintWriter;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 public class BeansGraphTest {
 
     @Test
-    public void testDependencies() {
+    public void testDependencies() throws ClassNotFoundException {
         // given
         AnnotationConfigApplicationContext appContext = new AnnotationConfigApplicationContext();
         appContext.register(TestConfigurer.class);
@@ -33,6 +33,8 @@ public class BeansGraphTest {
         appContext.register(Foo3.class);
         appContext.register(Foo4.class);
         appContext.register(Foo5.class);
+        appContext.register(Foo6.class);
+        appContext.register(BarFactory.class);
 
         // when
         appContext.refresh();
@@ -51,6 +53,9 @@ public class BeansGraphTest {
         assertBeanHasDependencies(graph, "foo3", "foo1");
         assertBeanHasDependencies(graph, "foo4", "foo1", "foo2", "foo3");
         assertBeanHasDependencies(graph, "foo5");
+        assertBeanHasDependencies(graph, "foo6", "beansGraphTest.BarFactory");
+        assertBeanHasDependencies(graph, "beansGraphTest.BarFactory", "&beansGraphTest.BarFactory");  // check bean depends on it's factory
+        assertBeanHasDependencies(graph, "&beansGraphTest.BarFactory");
     }
 
     @Test
@@ -119,10 +124,10 @@ public class BeansGraphTest {
 
         for(String target : targets) {
             Bean targetVertex = new Bean(target);
-            assertTrue(String.format("%s depends on %s", source, target), actualTargetVertices.contains(targetVertex));
+            assertTrue(String.format("expected %s to depend on %s", source, target), actualTargetVertices.contains(targetVertex));
             actualTargetVertices.remove(targetVertex);
         }
-        assertEquals(String.format("no unexpected dependencies for %s", source), actualTargetVertices, new HashSet<Bean>());
+        assertEquals(String.format("unexpected dependencies for %s", source), new HashSet<Bean>(), actualTargetVertices);
     }
 
     @EnableBeansGraph
@@ -221,6 +226,30 @@ public class BeansGraphTest {
 
     @Component("foo5")
     private static class Foo5 {
+
+    }
+
+    @Component("foo6")
+    private static class Foo6 {
+
+        @Autowired
+        private Bar bar;
+    }
+
+    private static class Bar {
+    }
+
+    private static class BarFactory extends AbstractFactoryBean<Object> {
+
+        @Override
+        public Class<Bar> getObjectType() {
+            return Bar.class;
+        }
+
+        @Override
+        protected Object createInstance() throws Exception {
+            return new Bar();
+        }
     }
 
     private List<Bean> getExpectedCycle() {

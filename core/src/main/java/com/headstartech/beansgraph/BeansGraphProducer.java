@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -73,6 +74,8 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
         while (!queue.isEmpty()) {
             Bean bv = queue.remove();
             graph.addVertex(bv);
+
+
             for (String dependency : getDependenciesForBean(factory, bv.getName())) {
                 Bean depBV = createBeanVertex(factory, dependency);
                 if(depBV != null) {
@@ -112,6 +115,25 @@ public class BeansGraphProducer implements ApplicationListener<ContextRefreshedE
         } catch(BeansException e) {
             // do nothing, just log
             log.debug("failed to get bean: bean={}, cause={}", sourceBeanName, e.getMostSpecificCause().getMessage());
+        }
+
+        // If the source bean was produced by a FactoryBean, add the FactoryBean as a dependency
+        try {
+            BeanDefinition bd = factory.getBeanDefinition(sourceBeanName);
+            if(bd.getBeanClassName() != null) {
+                Class<?> beanClass = Class.forName(bd.getBeanClassName());
+                if(FactoryBean.class.isAssignableFrom(beanClass) && !sourceBeanName.equals(bd.getBeanClassName())) {
+                    Map<String, ?> m = factory.getBeansOfType(beanClass);
+                    if(m.keySet().size() > 1) {
+                        log.warn("more than 1 factory bean of type found: type={}", beanClass.getCanonicalName());
+                    }
+                    res.addAll(m.keySet());
+                }
+            }
+        } catch(NoSuchBeanDefinitionException e) {
+            // ignore
+        } catch (ClassNotFoundException e) {
+            // ignore
         }
 
         return res;
