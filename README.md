@@ -6,7 +6,7 @@ The `beans-graph` library creates a graph of the bean dependencies in your Sprin
 * Find cyclic dependencies in your application
 * Get an overview of your application's bean dependencies
 
-###Maven
+### Maven
 
 Current version is 1.2.0.
 
