@@ -1,4 +1,4 @@
-##Spring beans graph 
+## Spring beans graph 
 [![Build Status](https://travis-ci.org/headstar/beans-graph.svg?branch=master)](https://travis-ci.org/headstar/beans-graph) [![Coverage Status](https://img.shields.io/coveralls/headstar/beans-graph.svg)](https://coveralls.io/r/headstar/beans-graph?branch=master)
 
 The `beans-graph` library creates a graph of the bean dependencies in your Spring application. The dependencies are collected at runtime. The library will help you:
@@ -74,6 +74,6 @@ Configure:
 }
 ```
 
-###License
+### License
 
 Published under Apache Software License 2.0, see LICENSE
